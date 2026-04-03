@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bicycle: A Complex Machine</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:    #1565C0;
+    --blue-l:  #E3F2FD;
+    --blue-m:  #42A5F5;
+    --green:   #2E7D32;
+    --green-l: #E8F5E9;
+    --green-m: #66BB6A;
+    --orange:  #E65100;
+    --orange-l:#FFF3E0;
+    --orange-m:#FFA726;
+    --pink:    #AD1457;
+    --pink-l:  #FCE4EC;
+    --pink-m:  #F06292;
+    --gold:    #F9A825;
+    --dark:    #1A1A2E;
+    --white:   #FFFFFF;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: #0d1b2a;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  /* ── WRAPPER that holds everything ── */
+  #app {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  /* ── SLIDE SYSTEM ── */
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 32px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(60px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+  }
+  .slide.exit-left {
+    opacity: 0;
+    transform: translateX(-60px);
+    pointer-events: none;
+  }
+
+  /* ── BACKGROUNDS ── */
+  .bg-intro   { background: linear-gradient(145deg, #0d1b2a 0%, #1a3a5c 50%, #0d2137 100%); }
+  .bg-lever   { background: linear-gradient(145deg, #0a3d1e 0%, #1b5e35 50%, #0a2d16 100%); }
+  .bg-wheel   { background: linear-gradient(145deg, #3e1f00 0%, #7c3d00 50%, #4a2500 100%); }
+  .bg-conc    { background: linear-gradient(145deg, #1a0033 0%, #4a0e6e 50%, #2d0050 100%); }
+
+  /* ── STARS (intro bg) ── */
+  .stars { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .star  { position: absolute; border-radius: 50%; background: #fff; animation: twinkle 3s infinite alternate; }
+  @keyframes twinkle { from { opacity: 0.2; } to { opacity: 0.9; } }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #f9a825, #ff6f00);
+    transition: width 0.5s ease;
+    z-index: 100;
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* ── NAV DOTS ── */
+  #nav-dots {
+    position: absolute;
+    bottom: 16px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 10px;
+    z-index: 100;
+  }
+  .dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+    border: 2px solid rgba(255,255,255,0.5);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dot.active { background: #f9a825; transform: scale(1.3); border-color: #f9a825; }
+
+  /* ── NAV TAP ZONES (full height, covers left/right thirds) ── */
+  .tap-zone {
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 22%;
+    z-index: 200;
+    cursor: pointer;
+    -webkit-tap-highlight-color: rgba(255,255,255,0.08);
+    touch-action: manipulation;
+  }
+  #tap-prev { left: 0; }
+  #tap-next { right: 0; }
+
+  /* ── NAV ARROW BUTTONS (visual, inside tap zones) ── */
+  .nav-arrow {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.35);
+    color: #fff;
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    user-select: none;
+  }
+  #tap-prev .nav-arrow { left: 8px; }
+  #tap-next .nav-arrow { right: 8px; }
+
+  /* ── SLIDE COUNTER ── */
+  #slide-counter {
+    position: absolute;
+    top: 12px; right: 16px;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    z-index: 100;
+  }
+
+  /* ══════════════════════════
+     SLIDE 0 — COVER / INTRO
+  ══════════════════════════ */
+  .cover-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(38px, 6vw, 72px);
+    color: #fff;
+    text-align: center;
+    line-height: 1.05;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.5);
+    animation: fadeUp 0.8s ease both;
+  }
+  .cover-title span { color: #f9a825; }
+  .cover-sub {
+    font-size: clamp(13px, 1.8vw, 18px);
+    color: rgba(255,255,255,0.65);
+    text-align: center;
+    margin-top: 10px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .cover-names {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    justify-content: center;
+    margin-top: 14px;
+    animation: fadeUp 0.8s 0.35s ease both;
+  }
+  .cover-names span {
+    font-size: clamp(13px, 1.6vw, 16px);
+    color: #FFE082;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .cover-badge {
+    margin-top: 28px;
+    background: rgba(249,168,37,0.18);
+    border: 2px solid #f9a825;
+    border-radius: 40px;
+    padding: 10px 28px;
+    color: #f9a825;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  /* Gear animation */
+  .gear-wrap {
+    position: relative;
+    width: 260px; height: 220px;
+    margin: 24px auto 0;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+  .gear-wrap svg { overflow: visible; }
+  .gear-big   { animation: spin 6s linear infinite; transform-origin: 90px 100px; }
+  .gear-small { animation: spin 6s linear infinite reverse; transform-origin: 190px 80px; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* Intro machine list */
+  .machine-pills {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+  .pill {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 30px;
+    padding: 7px 18px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .pill span { margin-right: 6px; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ══════════════════════════
+     STUDENT SLIDES LAYOUT
+  ══════════════════════════ */
+  .student-layout {
+    width: 100%; max-width: 1100px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 700px) {
+    .student-layout { grid-template-columns: 1fr; gap: 16px; }
+  }
+
+  .student-header {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 4px;
+  }
+  .student-num {
+    font-family: 'Fredoka One', cursive;
+    font-size: 52px;
+    line-height: 1;
+    opacity: 0.25;
+    color: #fff;
+  }
+  .student-title-block {}
+  .student-label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    color: #fff;
+    margin-bottom: 2px;
+  }
+  .student-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(26px, 4vw, 44px);
+    color: #fff;
+    line-height: 1.05;
+  }
+
+  /* Info card */
+  .info-card {
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.18);
+    border-radius: 20px;
+    padding: 22px 24px;
+    backdrop-filter: blur(6px);
+  }
+  .info-card h3 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .info-card p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.85);
+  }
+  .info-card ul {
+    margin-top: 10px;
+    padding-left: 18px;
+  }
+  .info-card ul li {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.82);
+  }
+  .info-card ul li strong { color: #fff; }
+
+  /* Quote bubble */
+  .quote-card {
+    background: rgba(255,255,255,0.13);
+    border-left: 4px solid #f9a825;
+    border-radius: 0 16px 16px 0;
+    padding: 16px 20px;
+    margin-top: 12px;
+  }
+  .quote-card .who {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #f9a825;
+    margin-bottom: 6px;
+  }
+  .quote-card .words {
+    font-size: 15px;
+    font-style: italic;
+    color: #fff;
+    line-height: 1.55;
+  }
+
+  /* Tip badge */
+  .tip-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(249,168,37,0.2);
+    border: 1.5px solid #f9a825;
+    border-radius: 30px;
+    padding: 6px 16px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #f9c023;
+    margin-top: 12px;
+  }
+
+  /* SVG illustration container */
+  .illus-card {
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.14);
+    border-radius: 20px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .illus-card svg { width: 100%; max-width: 360px; height: auto; }
+  .illus-card .illus-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+  }
+
+  /* Parts grid (small illustrations) */
+  .parts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .part-item {
+    background: rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 12px 8px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .part-item svg { width: 52px; height: 52px; }
+  .part-item .part-name {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #fff;
+    margin-top: 6px;
+    line-height: 1.3;
+  }
+  .part-item .part-role {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 2px;
+  }
+
+  /* ══════════════════════════
+     SLIDE 4 — CONCLUSION
+  ══════════════════════════ */
+  .conc-layout {
+    width: 100%; max-width: 900px;
+    text-align: center;
+  }
+  .conc-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(28px, 5vw, 56px);
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .conc-title span { color: #ce93d8; }
+  .conc-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+  .chips-row {
+    display: flex; flex-wrap: wrap; gap: 12px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .chip-item {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.25);
+    border-radius: 50px;
+    padding: 10px 22px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #fff;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .recap-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 700px) { .recap-grid { grid-template-columns: repeat(2, 1fr); } }
+  .recap-card {
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+  .recap-card svg { width: 56px; height: 56px; margin: 0 auto 8px; display: block; }
+  .recap-card .rc-name { font-family: 'Fredoka One', cursive; font-size: 16px; color: #fff; }
+  .recap-card .rc-part { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 3px; }
+  .rc-blue   { background: rgba(21,101,192,0.35); border: 2px solid rgba(66,165,245,0.5); }
+  .rc-green  { background: rgba(46,125,50,0.35);  border: 2px solid rgba(102,187,106,0.5); }
+  .rc-orange { background: rgba(230,81,0,0.35);   border: 2px solid rgba(255,167,38,0.5); }
+  .rc-pink   { background: rgba(173,20,87,0.35);  border: 2px solid rgba(240,98,146,0.5); }
+
+  .conc-quote {
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(206,147,216,0.5);
+    border-radius: 20px;
+    padding: 18px 28px;
+    font-size: 17px;
+    font-style: italic;
+    color: #fff;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .conc-tip {
+    font-size: 13px;
+    color: #ce93d8;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── KEYBOARD HINT ── */
+  #key-hint {
+    position: absolute;
+    bottom: 50px; right: 16px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── ANIMATED ENTRANCE ── */
+  .slide.active .info-card,
+  .slide.active .illus-card,
+  .slide.active .student-header,
+  .slide.active .quote-card,
+  .slide.active .recap-card,
+  .slide.active .chip-item {
+    animation: popIn 0.5s ease both;
+  }
+  .slide.active .info-card:nth-child(2) { animation-delay: 0.1s; }
+  .slide.active .illus-card            { animation-delay: 0.15s; }
+  .slide.active .quote-card            { animation-delay: 0.2s; }
+  .slide.active .recap-card:nth-child(1) { animation-delay: 0.1s; }
+  .slide.active .recap-card:nth-child(2) { animation-delay: 0.2s; }
+  .slide.active .recap-card:nth-child(3) { animation-delay: 0.3s; }
+  .slide.active .recap-card:nth-child(4) { animation-delay: 0.4s; }
+  .slide.active .chip-item:nth-child(1) { animation-delay: 0.05s; }
+  .slide.active .chip-item:nth-child(2) { animation-delay: 0.1s; }
+  .slide.active .chip-item:nth-child(3) { animation-delay: 0.15s; }
+  @keyframes popIn { from { opacity:0; transform:scale(0.88) translateY(16px); } to { opacity:1; transform:scale(1) translateY(0); } }
+</style>
+</head>
+<body>
+<div id="app">
+<div id="progress-bar"></div>
+<div id="slide-counter">1 / 5</div>
+<div class="tap-zone" id="tap-prev" onclick="navGo(-1)"><div class="nav-arrow">&#8592;</div></div>
+<div class="tap-zone" id="tap-next" onclick="navGo(1)"><div class="nav-arrow">&#8594;</div></div>
+<div id="nav-dots">
+  <div class="dot active" onclick="navTo(0)"></div>
+  <div class="dot" onclick="navTo(1)"></div>
+  <div class="dot" onclick="navTo(2)"></div>
+  <div class="dot" onclick="navTo(3)"></div>
+  <div class="dot" onclick="navTo(4)"></div>
+</div>
+<div id="key-hint">tap sides or swipe to navigate</div>
+
+
+<!-- ══════════════════════════════════════
+     SLIDE 0 — COVER
+══════════════════════════════════════ -->
+<div class="slide bg-intro active" id="slide-0">
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
+
+  <div class="cover-title">The Bicycle:<br><span>A Complex Machine</span></div>
+  <div class="cover-sub">5th Grade Science Presentation</div>
+  <div class="cover-names">
+    <span>Alejandra Berrio</span>
+    <span>Emanuel Angarita</span>
+    <span>Julieta Vélez</span>
+    <span>Samuel Hernández</span>
+  </div>
+
+  <!-- Animated gears SVG -->
+  <div class="gear-wrap">
+    <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Big gear -->
+      <g class="gear-big">
+        <circle cx="90" cy="100" r="52" fill="none" stroke="#f9a825" stroke-width="6"/>
+        <circle cx="90" cy="100" r="18" fill="#1a3a5c" stroke="#f9a825" stroke-width="4"/>
+        <!-- Teeth -->
+        <rect x="82" y="40" width="16" height="14" rx="3" fill="#f9a825"/>
+        <rect x="82" y="146" width="16" height="14" rx="3" fill="#f9a825"/>
+        <rect x="30" y="92" width="14" height="16" rx="3" fill="#f9a825"/>
+        <rect x="136" y="92" width="14" height="16" rx="3" fill="#f9a825"/>
+        <rect x="50" y="53" width="14" height="16" rx="3" fill="#f9a825" transform="rotate(45 57 61)"/>
+        <rect x="116" y="53" width="14" height="16" rx="3" fill="#f9a825" transform="rotate(-45 123 61)"/>
+        <rect x="50" y="131" width="14" height="16" rx="3" fill="#f9a825" transform="rotate(-45 57 139)"/>
+        <rect x="116" y="131" width="14" height="16" rx="3" fill="#f9a825" transform="rotate(45 123 139)"/>
+        <!-- Spokes -->
+        <line x1="90" y1="60" x2="90" y2="140" stroke="#f9a825" stroke-width="2.5"/>
+        <line x1="50" y1="80" x2="130" y2="120" stroke="#f9a825" stroke-width="2.5"/>
+        <line x1="130" y1="80" x2="50" y2="120" stroke="#f9a825" stroke-width="2.5"/>
+      </g>
+      <!-- Small gear -->
+      <g class="gear-small">
+        <circle cx="190" cy="80" r="34" fill="none" stroke="#42A5F5" stroke-width="5"/>
+        <circle cx="190" cy="80" r="12" fill="#1a3a5c" stroke="#42A5F5" stroke-width="3.5"/>
+        <rect x="183" y="40" width="14" height="11" rx="2.5" fill="#42A5F5"/>
+        <rect x="183" y="109" width="14" height="11" rx="2.5" fill="#42A5F5"/>
+        <rect x="150" y="73" width="11" height="14" rx="2.5" fill="#42A5F5"/>
+        <rect x="219" y="73" width="11" height="14" rx="2.5" fill="#42A5F5"/>
+        <rect x="157" y="50" width="11" height="14" rx="2.5" fill="#42A5F5" transform="rotate(45 163 57)"/>
+        <rect x="213" y="50" width="11" height="14" rx="2.5" fill="#42A5F5" transform="rotate(-45 219 57)"/>
+        <line x1="190" y1="50" x2="190" y2="110" stroke="#42A5F5" stroke-width="2"/>
+        <line x1="160" y1="65" x2="220" y2="95" stroke="#42A5F5" stroke-width="2"/>
+        <line x1="220" y1="65" x2="160" y2="95" stroke="#42A5F5" stroke-width="2"/>
+      </g>
+      <!-- Chain link -->
+      <path d="M142 100 Q160 90 156 80" fill="none" stroke="#888" stroke-width="3" stroke-dasharray="5,3"/>
+    </svg>
+  </div>
+
+  <div class="machine-pills">
+    <div class="pill"><span>🔧</span>Lever</div>
+    <div class="pill"><span>⭕</span>Wheel &amp; Axle</div>
+    <div class="pill"><span>⛓</span>Pulley</div>
+    <div class="pill"><span>🔩</span>Screw</div>
+    <div class="pill"><span>📐</span>Inclined Plane</div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════
+     SLIDE 1 — STUDENT 1: INTRO / COMPLEX MACHINE
+══════════════════════════════════════ -->
+<div class="slide bg-intro" id="slide-1">
+  <div class="student-layout">
+
+    <div class="student-header">
+      <div class="student-title-block">
+        <div class="student-label">Introduction</div>
+        <div class="student-title">What Is a<br>Complex Machine?</div>
+      </div>
+    </div>
+
+    <!-- LEFT: info -->
+    <div>
+      <div class="info-card" style="border-color:rgba(66,165,245,0.4);">
+        <h3 style="color:#42A5F5;">⚙️ Simple Machine</h3>
+        <p>A <strong style="color:#fff;">simple machine</strong> is a device with few or no moving parts that makes work easier. It changes the <em>direction</em> or <em>size</em> of a force.</p>
+      </div>
+
+      <div class="info-card" style="margin-top:14px; border-color:rgba(249,168,37,0.4);">
+        <h3 style="color:#f9a825;">🔗 Complex Machine</h3>
+        <p>A <strong style="color:#fff;">complex machine</strong> combines <strong style="color:#f9a825;">two or more simple machines</strong> working as a team. Each one passes its force to the next!</p>
+        <ul style="margin-top:10px;">
+          <li>More power than one simple machine alone</li>
+          <li>Each part does a different job</li>
+          <li>Together they accomplish amazing things!</li>
+        </ul>
+      </div>
+
+      <div class="quote-card">
+        <div class="words">"This is a complex machine. It is made of many simple machines working together as a team!"</div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: interactive bicycle illustration -->
+    <div class="illus-card" style="padding:14px; position:relative;">
+      <div class="illus-label">🚲 Hover each part to see it move!</div>
+
+      <!-- Tooltip -->
+      <div id="bike-tooltip" style="
+        position:absolute; top:10px; left:50%; transform:translateX(-50%);
+        background:rgba(0,0,0,0.82); border:1.5px solid #f9a825; border-radius:12px;
+        padding:7px 16px; font-size:12px; font-weight:700; color:#FFE082;
+        pointer-events:none; opacity:0; transition:opacity 0.2s; white-space:nowrap; z-index:10;
+      "></div>
+
+      <svg id="bike-svg" viewBox="0 0 380 265" xmlns="http://www.w3.org/2000/svg" style="width:100%;cursor:default;">
+        <defs>
+          <!-- Glow filters -->
+          <filter id="glow-blue"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-gold"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="glow-pink"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+
+          <!-- Back wheel spin animation -->
+          <animateTransform id="bw-spin"/>
+        </defs>
+
+        <!-- ── BACK WHEEL (Wheel & Axle) ── -->
+        <g id="part-wheel-back" class="bike-part" style="cursor:pointer;" transform="translate(100,185)">
+          <circle r="62" fill="none" stroke="#42A5F5" stroke-width="7"/>
+          <circle r="10" fill="#42A5F5"/>
+          <!-- spokes as a rotating group -->
+          <g id="bw-spokes">
+            <line x1="0" y1="-62" x2="0" y2="62" stroke="#42A5F5" stroke-width="2.5"/>
+            <line x1="-62" y1="0" x2="62" y2="0" stroke="#42A5F5" stroke-width="2.5"/>
+            <line x1="-44" y1="-44" x2="44" y2="44" stroke="#42A5F5" stroke-width="2.5"/>
+            <line x1="44" y1="-44" x2="-44" y2="44" stroke="#42A5F5" stroke-width="2.5"/>
+          </g>
+        </g>
+
+        <!-- ── FRONT WHEEL (Wheel & Axle) ── -->
+        <g id="part-wheel-front" class="bike-part" style="cursor:pointer;" transform="translate(290,185)">
+          <circle r="62" fill="none" stroke="#42A5F5" stroke-width="7"/>
+          <circle r="10" fill="#42A5F5"/>
+          <g id="fw-spokes">
+            <line x1="0" y1="-62" x2="0" y2="62" stroke="#42A5F5" stroke-width="2.5"/>
+            <line x1="-62" y1="0" x2="62" y2="0" stroke="#42A5F5" stroke-width="2.5"/>
+            <line x1="-44" y1="-44" x2="44" y2="44" stroke="#42A5F5" stroke-width="2.5"/>
+            <line x1="44" y1="-44" x2="-44" y2="44" stroke="#42A5F5" stroke-width="2.5"/>
+          </g>
+        </g>
+
+        <!-- ── FRAME (static) ── -->
+        <polyline points="100,185 160,90 220,185 100,185" fill="none" stroke="#f9a825" stroke-width="6" stroke-linejoin="round"/>
+        <line x1="160" y1="90" x2="290" y2="185" stroke="#f9a825" stroke-width="6"/>
+        <line x1="160" y1="90" x2="195" y2="55" stroke="#f9a825" stroke-width="6"/>
+        <line x1="195" y1="55" x2="290" y2="185" stroke="#f9a825" stroke-width="5"/>
+        <!-- Seat post -->
+        <line x1="160" y1="90" x2="145" y2="60" stroke="#aaa" stroke-width="5"/>
+        <rect x="125" y="54" width="40" height="10" rx="5" fill="#ccc"/>
+
+        <!-- ── HANDLEBAR / LEVER ── -->
+        <g id="part-handlebar" class="bike-part" style="cursor:pointer;" transform-origin="195 48">
+          <line x1="195" y1="55" x2="195" y2="32" stroke="#aaa" stroke-width="5"/>
+          <line x1="168" y1="28" x2="222" y2="28" stroke="#ccc" stroke-width="9" stroke-linecap="round"/>
+          <!-- Grip ends -->
+          <circle cx="168" cy="28" r="5" fill="#66BB6A"/>
+          <circle cx="222" cy="28" r="5" fill="#66BB6A"/>
+        </g>
+
+        <!-- ── CHAIN (Pulley) ── -->
+        <g id="part-chain" class="bike-part" style="cursor:pointer;">
+          <path d="M212 185 Q250 185 280 183" fill="none" stroke="#f9c023" stroke-width="4" stroke-dasharray="8,5"/>
+        </g>
+
+        <!-- ── GEAR / CHAINRING (Pulley) ── -->
+        <g id="part-gear" class="bike-part" style="cursor:pointer;" transform="translate(190,185)">
+          <circle r="22" fill="none" stroke="#f9c023" stroke-width="4"/>
+          <circle r="8" fill="#f9c023"/>
+          <!-- gear teeth as rotating group -->
+          <g id="gear-teeth">
+            <rect x="-4" y="-26" width="8" height="8" rx="2" fill="#f9c023"/>
+            <rect x="-4" y="18" width="8" height="8" rx="2" fill="#f9c023"/>
+            <rect x="18" y="-4" width="8" height="8" rx="2" fill="#f9c023"/>
+            <rect x="-26" y="-4" width="8" height="8" rx="2" fill="#f9c023"/>
+            <rect x="12" y="-20" width="8" height="8" rx="2" fill="#f9c023" transform="rotate(45)"/>
+            <rect x="-20" y="12" width="8" height="8" rx="2" fill="#f9c023" transform="rotate(45)"/>
+          </g>
+          <!-- Pedal arm -->
+          <line id="pedal-arm" x1="0" y1="0" x2="18" y2="14" stroke="#f9c023" stroke-width="4"/>
+          <rect id="pedal" x="14" y="12" width="14" height="6" rx="2" fill="#aaa"/>
+        </g>
+
+        <!-- ── BRAKE PADS (Wedge) ── -->
+        <g id="part-brake" class="bike-part" style="cursor:pointer;">
+          <!-- front brake caliper -->
+          <rect id="brake-f-l" x="272" y="120" width="6" height="18" rx="2" fill="#80cbc4"/>
+          <rect id="brake-f-r" x="284" y="120" width="6" height="18" rx="2" fill="#80cbc4"/>
+          <!-- back brake caliper -->
+          <rect id="brake-b-l" x="82" y="120" width="6" height="18" rx="2" fill="#80cbc4"/>
+          <rect id="brake-b-r" x="94" y="120" width="6" height="18" rx="2" fill="#80cbc4"/>
+        </g>
+
+        <!-- ── SCREW dots (decorative) ── -->
+        <g id="part-screw" class="bike-part" style="cursor:pointer;">
+          <circle id="sc1" cx="160" cy="90" r="5" fill="#F06292"/>
+          <circle id="sc2" cx="100" cy="185" r="5" fill="#F06292"/>
+          <circle id="sc3" cx="290" cy="185" r="5" fill="#F06292"/>
+          <circle id="sc4" cx="190" cy="185" r="5" fill="#F06292"/>
+        </g>
+
+        <!-- ── LABELS (always visible) ── -->
+        <text x="14" y="113" font-size="11" fill="#ffffff" font-family="Nunito,sans-serif" font-weight="800">Wheel &amp; Axle</text>
+        <text x="224" y="36" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Lever</text>
+        <text x="156" y="228" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Gears (Pulley)</text>
+        <text x="230" y="175" font-size="11" fill="#ffffff" font-family="Nunito,sans-serif" font-weight="800">Chain</text>
+      </svg>
+
+      <!-- Part cards (clickable / hover) -->
+      <div class="parts-grid" style="margin-top:6px;">
+        <div class="part-item bike-card" data-part="wheel" style="cursor:pointer;">
+          <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#42A5F5" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#1565C0"/><line x1="26" y1="4" x2="26" y2="48" stroke="#42A5F5" stroke-width="2"/><line x1="4" y1="26" x2="48" y2="26" stroke="#42A5F5" stroke-width="2"/><line x1="10" y1="10" x2="42" y2="42" stroke="#42A5F5" stroke-width="2"/><line x1="42" y1="10" x2="10" y2="42" stroke="#42A5F5" stroke-width="2"/></svg>
+          <div class="part-name">Wheel &amp; Axle</div><div class="part-role">Wheels spin!</div>
+        </div>
+        <div class="part-item bike-card" data-part="handlebar" style="cursor:pointer;">
+          <svg viewBox="0 0 52 52"><rect x="4" y="24" width="44" height="6" rx="3" fill="#66BB6A"/><circle cx="26" cy="27" r="6" fill="#2E7D32"/><rect x="2" y="20" width="10" height="12" rx="2" fill="#a5d6a7"/><rect x="40" y="20" width="10" height="12" rx="2" fill="#2E7D32" opacity="0.6"/></svg>
+          <div class="part-name">Lever</div><div class="part-role">Handlebars steer!</div>
+        </div>
+        <div class="part-item bike-card" data-part="gear" style="cursor:pointer;">
+          <svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="18" fill="none" stroke="#FFA726" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#E65100"/><rect x="22" y="4" width="8" height="8" rx="2" fill="#FFA726"/><rect x="22" y="40" width="8" height="8" rx="2" fill="#FFA726"/><rect x="4" y="22" width="8" height="8" rx="2" fill="#FFA726"/><rect x="40" y="22" width="8" height="8" rx="2" fill="#FFA726"/></svg>
+          <div class="part-name">Pulley</div><div class="part-role">Chain &amp; Gears turn!</div>
+        </div>
+        <div class="part-item bike-card" data-part="screw" style="cursor:pointer;">
+          <svg viewBox="0 0 52 52"><rect x="20" y="6" width="12" height="16" rx="3" fill="#F06292"/><rect x="14" y="8" width="24" height="6" rx="1" fill="#AD1457"/><rect x="22" y="22" width="8" height="24" rx="2" fill="#F06292"/><line x1="22" y1="28" x2="30" y2="28" stroke="#AD1457" stroke-width="2"/><line x1="22" y1="34" x2="30" y2="34" stroke="#AD1457" stroke-width="2"/><line x1="22" y1="40" x2="30" y2="40" stroke="#AD1457" stroke-width="2"/></svg>
+          <div class="part-name">Screw</div><div class="part-role">Bolts vibrate!</div>
+        </div>
+        <div class="part-item bike-card" data-part="brake" style="cursor:pointer;">
+          <svg viewBox="0 0 52 52"><polygon points="4,44 48,44 48,14" fill="#80cbc4" opacity="0.8"/><line x1="4" y1="44" x2="48" y2="14" stroke="#00695C" stroke-width="3"/><line x1="4" y1="44" x2="48" y2="44" stroke="#00695C" stroke-width="3"/></svg>
+          <div class="part-name">Wedge</div><div class="part-role">Brakes grip!</div>
+        </div>
+        <div class="part-item bike-card" data-part="inclined" style="cursor:pointer;">
+          <svg viewBox="0 0 52 52"><polygon points="4,44 48,44 48,14" fill="#ce93d8" opacity="0.7"/><line x1="4" y1="44" x2="48" y2="14" stroke="#7B1FA2" stroke-width="3"/><line x1="4" y1="44" x2="48" y2="44" stroke="#7B1FA2" stroke-width="3"/></svg>
+          <div class="part-name">Inclined Plane</div><div class="part-role">Ramps help climb!</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .bike-part { transition: filter 0.2s; }
+  .bike-card { transition: transform 0.15s, border-color 0.15s; }
+  .bike-card:hover { transform: scale(1.08); border-color: #f9a825 !important; }
+  @keyframes spinWheel { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes rockHandlebar { 0%,100%{transform:rotate(-18deg)} 50%{transform:rotate(18deg)} }
+  @keyframes spinGear { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes pulseBrake { 0%,100%{transform:scaleX(1)} 50%{transform:scaleX(0.6)} }
+  @keyframes shakeScrew { 0%,100%{transform:translate(0,0)} 25%{transform:translate(2px,-2px)} 75%{transform:translate(-2px,2px)} }
+  @keyframes dashChain { from{stroke-dashoffset:0} to{stroke-dashoffset:-40} }
+</style>
+
+<script>
+(function(){
+  const tooltip = document.getElementById('bike-tooltip');
+  const svg     = document.getElementById('bike-svg');
+
+  const tips = {
+    wheel:     '⭕ Wheel & Axle — reduces friction, converts rotation to motion!',
+    handlebar: '🔧 Lever — small force on grips = big turn of front wheel!',
+    gear:      '⛓ Pulley — chain transfers pedal power to rear wheel!',
+    brake:     '📐 Wedge — brake pads squeeze the rim to stop the bike!',
+    screw:     '🔩 Screw — bolts hold every part of the bike together!',
+    inclined:  '📐 Inclined Plane — ramps make going up hills easier!',
+  };
+
+  let wheelAngle = 0, gearAngle = 0, animId = null;
+
+  function showTip(txt){
+    tooltip.textContent = txt;
+    tooltip.style.opacity = '1';
+  }
+  function hideTip(){ tooltip.style.opacity = '0'; }
+
+  // ── wheel spin ──
+  function startWheels(){
+    cancelAnimationFrame(animId);
+    function frame(){
+      wheelAngle = (wheelAngle + 3) % 360;
+      gearAngle  = (gearAngle  + 5) % 360;
+      document.getElementById('bw-spokes').setAttribute('transform', `rotate(${wheelAngle})`);
+      document.getElementById('fw-spokes').setAttribute('transform', `rotate(${wheelAngle})`);
+      document.getElementById('gear-teeth').setAttribute('transform', `rotate(${gearAngle})`);
+      // chain dash
+      const chain = document.querySelector('#part-chain path');
+      chain.style.strokeDashoffset = -(wheelAngle * 0.4) + 'px';
+      animId = requestAnimationFrame(frame);
+    }
+    frame();
+  }
+  function stopAll(){
+    cancelAnimationFrame(animId);
+    animId = null;
+  }
+
+  // ── handlebar rock ──
+  let hbTimer = null;
+  function startHandlebar(){
+    const hb = document.getElementById('part-handlebar');
+    let a = 0, dir = 1;
+    cancelAnimationFrame(hbTimer);
+    function frame(){
+      a += dir * 2;
+      if(a > 18 || a < -18) dir *= -1;
+      hb.setAttribute('transform', `rotate(${a}, 195, 48)`);
+      hbTimer = requestAnimationFrame(frame);
+    }
+    frame();
+  }
+  function stopHandlebar(){
+    cancelAnimationFrame(hbTimer);
+    hbTimer = null;
+    document.getElementById('part-handlebar').setAttribute('transform','');
+  }
+
+  // ── brake squeeze ──
+  let brakeTimer = null;
+  function startBrake(){
+    const fl = document.getElementById('brake-f-l');
+    const fr = document.getElementById('brake-f-r');
+    const bl = document.getElementById('brake-b-l');
+    const br2 = document.getElementById('brake-b-r');
+    let t = 0;
+    cancelAnimationFrame(brakeTimer);
+    function frame(){
+      t += 0.08;
+      const d = Math.sin(t) * 5;
+      fl.setAttribute('x', 272 + d);
+      fr.setAttribute('x', 284 - d);
+      bl.setAttribute('x', 82 + d);
+      br2.setAttribute('x', 94 - d);
+      brakeTimer = requestAnimationFrame(frame);
+    }
+    frame();
+  }
+  function stopBrake(){
+    cancelAnimationFrame(brakeTimer);
+    ['brake-f-l','brake-f-r','brake-b-l','brake-b-r'].forEach((id,i)=>{
+      const defaults = [272,284,82,94];
+      document.getElementById(id).setAttribute('x', defaults[i]);
+    });
+  }
+
+  // ── screw shake ──
+  let screwTimer = null;
+  function startScrew(){
+    const g = document.getElementById('part-screw');
+    let t = 0;
+    cancelAnimationFrame(screwTimer);
+    function frame(){
+      t += 0.2;
+      const dx = Math.sin(t*3)*3, dy = Math.cos(t*2.5)*2;
+      g.setAttribute('transform', `translate(${dx},${dy})`);
+      screwTimer = requestAnimationFrame(frame);
+    }
+    frame();
+  }
+  function stopScrew(){
+    cancelAnimationFrame(screwTimer);
+    document.getElementById('part-screw').setAttribute('transform','');
+  }
+
+  // ── inclined: highlight frame ──
+  let incId = null;
+  function startInclined(){
+    const frame = svg.querySelector('polyline');
+    let t = 0;
+    cancelAnimationFrame(incId);
+    function anim(){
+      t += 0.05;
+      const bright = Math.abs(Math.sin(t));
+      frame.setAttribute('stroke', `rgba(206,147,216,${0.5+bright*0.5})`);
+      frame.setAttribute('stroke-width', 6 + bright*4);
+      incId = requestAnimationFrame(anim);
+    }
+    anim();
+  }
+  function stopInclined(){
+    cancelAnimationFrame(incId);
+    const frame = svg.querySelector('polyline');
+    frame.setAttribute('stroke','#f9a825');
+    frame.setAttribute('stroke-width','6');
+  }
+
+  // ── Wire up all hover targets ──
+  const actions = {
+    wheel:     { start: startWheels,    stop: stopAll },
+    handlebar: { start: startHandlebar, stop: stopHandlebar },
+    gear:      { start: startWheels,    stop: stopAll },
+    brake:     { start: startBrake,     stop: stopBrake },
+    screw:     { start: startScrew,     stop: stopScrew },
+    inclined:  { start: startInclined,  stop: stopInclined },
+  };
+
+  // SVG parts
+  const svgParts = {
+    'part-wheel-back':  'wheel',
+    'part-wheel-front': 'wheel',
+    'part-handlebar':   'handlebar',
+    'part-chain':       'gear',
+    'part-gear':        'gear',
+    'part-brake':       'brake',
+    'part-screw':       'screw',
+  };
+
+  Object.entries(svgParts).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('mouseenter', ()=>{ showTip(tips[key]); actions[key].start(); });
+    el.addEventListener('mouseleave', ()=>{ hideTip(); actions[key].stop(); });
+  });
+
+  // Card parts
+  document.querySelectorAll('.bike-card').forEach(card => {
+    const key = card.dataset.part;
+    card.addEventListener('mouseenter', ()=>{ showTip(tips[key]); actions[key] && actions[key].start(); });
+    card.addEventListener('mouseleave', ()=>{ hideTip(); actions[key] && actions[key].stop(); });
+  });
+})();
+</script>
+
+
+<!-- ══════════════════════════════════════
+     SLIDE 2 — STUDENT 2: LEVER
+══════════════════════════════════════ -->
+<div class="slide bg-lever" id="slide-2">
+  <div class="student-layout">
+
+    <div class="student-header">
+      <div class="student-title-block">
+        <div class="student-label">Simple Machine</div>
+        <div class="student-title" style="color:#66BB6A;">Handlebars<br>= Lever!</div>
+      </div>
+    </div>
+
+    <!-- LEFT: lever info -->
+    <div>
+      <div class="info-card" style="border-color:rgba(102,187,106,0.4);">
+        <h3 style="color:#66BB6A;">🔧 What Is a Lever?</h3>
+        <p>A lever is a <strong style="color:#fff;">rigid bar that pivots on a fulcrum</strong>. It lets you move a heavy load with a smaller force. There are 3 types of levers!</p>
+      </div>
+
+      <!-- Lever diagram SVG -->
+      <div class="info-card" style="margin-top:14px; border-color:rgba(102,187,106,0.3);">
+        <h3 style="color:#66BB6A; font-size:16px;">📐 Class 1 Lever — Handlebars</h3>
+        <svg viewBox="0 0 320 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;margin:8px 0;">
+          <!-- Bar -->
+          <rect x="20" y="48" width="280" height="10" rx="5" fill="#66BB6A"/>
+          <!-- Fulcrum triangle -->
+          <polygon points="160,58 140,90 180,90" fill="#f9a825"/>
+          <line x1="135" y1="90" x2="185" y2="90" stroke="#f9a825" stroke-width="4"/>
+          <!-- Input force arrow -->
+          <line x1="40" y1="35" x2="40" y2="50" stroke="#ffffff" stroke-width="3" marker-end="url(#arr2)"/>
+          <text x="10" y="28" font-size="12" fill="#ffffff" font-family="Nunito,sans-serif" font-weight="800">INPUT</text>
+          <text x="5" y="42" font-size="11" fill="#d0f0ff" font-family="Nunito,sans-serif">(Your hands)</text>
+          <!-- Fulcrum label -->
+          <text x="140" y="107" font-size="12" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">FULCRUM</text>
+          <!-- Output force arrow -->
+          <line x1="280" y1="58" x2="280" y2="80" stroke="#ffb3cc" stroke-width="3" marker-end="url(#arr3)"/>
+          <text x="252" y="94" font-size="12" fill="#ffb3cc" font-family="Nunito,sans-serif" font-weight="800">OUTPUT</text>
+          <text x="240" y="107" font-size="11" fill="#ffd6e5" font-family="Nunito,sans-serif">(Wheel turns)</text>
+          <defs>
+            <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M2 2L8 5L2 8" fill="none" stroke="#42A5F5" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+            <marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M2 2L8 5L2 8" fill="none" stroke="#f06292" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+          </defs>
+        </svg>
+        <ul>
+          <li><strong>Input Force:</strong> Your hands pushing the handlebars</li>
+          <li><strong>Fulcrum:</strong> The steering column pivot point</li>
+          <li><strong>Output Force:</strong> The front wheel changes direction</li>
+        </ul>
+      </div>
+
+      <div class="quote-card">
+        <div class="words">"The handlebars are levers. They help us steer the bike easily with just a little bit of force."</div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: interactive lever illustration -->
+    <div class="illus-card" style="position:relative; padding:14px;">
+      <div class="illus-label">🖱️ Hover each part to see it move!</div>
+      <div id="lever-tooltip" style="
+        position:absolute; top:8px; left:50%; transform:translateX(-50%);
+        background:rgba(0,0,0,0.82); border:1.5px solid #66BB6A; border-radius:12px;
+        padding:6px 14px; font-size:12px; font-weight:700; color:#a5d6a7;
+        pointer-events:none; opacity:0; transition:opacity 0.2s; white-space:nowrap; z-index:10;
+      "></div>
+
+      <svg id="lever-svg" viewBox="0 0 340 295" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+
+        <!-- ── STEM (static) ── -->
+        <rect x="158" y="130" width="24" height="80" rx="6" fill="#666"/>
+
+        <!-- ── HANDLEBAR (main lever — rocks left/right) ── -->
+        <g id="lv-handlebar" style="cursor:pointer; transform-origin:170px 130px;">
+          <rect x="55" y="118" width="220" height="16" rx="8" fill="#aaa"/>
+          <!-- Left grip -->
+          <rect x="38" y="113" width="28" height="28" rx="8" fill="#2E7D32"/>
+          <rect x="38" y="126" width="28" height="5" rx="2" fill="#1b5e20"/>
+          <!-- Right grip -->
+          <rect x="270" y="113" width="28" height="28" rx="8" fill="#2E7D32"/>
+          <rect x="270" y="126" width="28" height="5" rx="2" fill="#1b5e20"/>
+          <!-- Hands -->
+          <ellipse cx="57" cy="133" rx="20" ry="14" fill="#FFCC80" opacity="0.9"/>
+          <ellipse cx="57" cy="127" rx="7" ry="5" fill="#FFB74D"/>
+          <ellipse cx="57" cy="139" rx="7" ry="5" fill="#FFB74D"/>
+          <ellipse cx="281" cy="133" rx="20" ry="14" fill="#FFCC80" opacity="0.9"/>
+          <ellipse cx="281" cy="127" rx="7" ry="5" fill="#FFB74D"/>
+          <ellipse cx="281" cy="139" rx="7" ry="5" fill="#FFB74D"/>
+          <!-- Input force arrow animated -->
+          <line id="lv-force-arrow" x1="57" y1="103" x2="57" y2="116" stroke="#7effc4" stroke-width="3" stroke-dasharray="4,2"/>
+        </g>
+
+        <!-- ── FULCRUM ── -->
+        <g id="lv-fulcrum" style="cursor:pointer;">
+          <polygon points="170,130 150,165 190,165" fill="#f9a825"/>
+          <line x1="144" y1="165" x2="196" y2="165" stroke="#f9a825" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="170" cy="130" r="7" fill="#FFE082"/>
+        </g>
+
+        <!-- ── BRAKE LEVERS (squeeze animation) ── -->
+        <g id="lv-brake-left" style="cursor:pointer;">
+          <path id="bl-left-arm" d="M78 126 Q84 148 88 160" stroke="#66BB6A" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <circle cx="88" cy="161" r="5" fill="#a5d6a7"/>
+        </g>
+        <g id="lv-brake-right" style="cursor:pointer;">
+          <path id="bl-right-arm" d="M258 126 Q264 148 268 160" stroke="#66BB6A" stroke-width="8" fill="none" stroke-linecap="round"/>
+          <circle cx="268" cy="161" r="5" fill="#a5d6a7"/>
+        </g>
+
+        <!-- ── OUTPUT arrow (wheel turning) ── -->
+        <g id="lv-output" style="cursor:pointer;">
+          <!-- mini front wheel -->
+          <circle cx="280" cy="240" r="38" fill="none" stroke="#42A5F5" stroke-width="5"/>
+          <circle cx="280" cy="240" r="9" fill="#42A5F5"/>
+          <g id="lv-wheel-spokes">
+            <line x1="280" y1="202" x2="280" y2="278" stroke="#42A5F5" stroke-width="2"/>
+            <line x1="242" y1="240" x2="318" y2="240" stroke="#42A5F5" stroke-width="2"/>
+            <line x1="253" y1="213" x2="307" y2="267" stroke="#42A5F5" stroke-width="2"/>
+            <line x1="307" y1="213" x2="253" y2="267" stroke="#42A5F5" stroke-width="2"/>
+          </g>
+          <text x="224" y="292" font-size="11" fill="#42A5F5" font-family="Nunito,sans-serif" font-weight="800">Output: Wheel turns!</text>
+        </g>
+
+        <!-- ── CONNECTING ARROW handlebar → wheel ── -->
+        <line x1="230" y1="170" x2="260" y2="205" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-dasharray="5,4"/>
+
+        <!-- ── LABELS ── -->
+        <text x="18" y="100" font-size="12" fill="#7effc4" font-family="Nunito,sans-serif" font-weight="800">Force (Input) ↓</text>
+        <text x="140" y="183" font-size="12" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Fulcrum</text>
+        <text x="58" y="182" font-size="11" fill="#a5d6a7" font-family="Nunito,sans-serif" font-weight="700">Brake</text>
+        <text x="56" y="194" font-size="11" fill="#a5d6a7" font-family="Nunito,sans-serif" font-weight="700">Lever</text>
+        <text x="230" y="182" font-size="11" fill="#a5d6a7" font-family="Nunito,sans-serif" font-weight="700">Brake</text>
+        <text x="228" y="194" font-size="11" fill="#a5d6a7" font-family="Nunito,sans-serif" font-weight="700">Lever</text>
+
+        <!-- Fun fact -->
+        <rect x="30" y="238" width="200" height="48" rx="10" fill="rgba(0,0,0,0.4)" stroke="#66BB6A" stroke-width="1.5"/>
+        <text x="130" y="257" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">⭐ Fun Fact!</text>
+        <text x="130" y="272" font-size="10" fill="#fff" font-family="Nunito,sans-serif" text-anchor="middle">Brake levers are also Class 1 levers!</text>
+      </svg>
+
+      <div class="info-card" style="padding:10px 14px; margin-top:6px;">
+        <p style="font-size:12.5px;"><strong style="color:#66BB6A;">More levers:</strong> Brake levers, pedal cranks, kickstand — levers everywhere!</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const tip = document.getElementById('lever-tooltip');
+  function showL(t){ tip.textContent=t; tip.style.opacity='1'; }
+  function hideL(){ tip.style.opacity='0'; }
+
+  // handlebar rock
+  let hbId=null, hbA=0, hbDir=1;
+  function startHB(){
+    cancelAnimationFrame(hbId);
+    const el=document.getElementById('lv-handlebar');
+    function f(){
+      hbA+=hbDir*1.8; if(hbA>16||hbA<-16) hbDir*=-1;
+      el.setAttribute('transform',`rotate(${hbA},170,130)`);
+      // spin the output wheel too
+      const sp=document.getElementById('lv-wheel-spokes');
+      if(sp){ sp.setAttribute('transform',`rotate(${hbA*3},280,240)`); }
+      hbId=requestAnimationFrame(f);
+    } f();
+  }
+  function stopHB(){
+    cancelAnimationFrame(hbId); hbId=null;
+    document.getElementById('lv-handlebar').setAttribute('transform','');
+    const sp=document.getElementById('lv-wheel-spokes');
+    if(sp) sp.setAttribute('transform','');
+  }
+
+  // fulcrum pulse
+  let fcId=null, fcT=0;
+  function startFC(){
+    cancelAnimationFrame(fcId);
+    const el=document.getElementById('lv-fulcrum');
+    function f(){
+      fcT+=0.1;
+      const s=1+Math.abs(Math.sin(fcT))*0.3;
+      el.setAttribute('transform',`scale(${s}) translate(${170*(1-s)/s},${148*(1-s)/s})`);
+      fcId=requestAnimationFrame(f);
+    } f();
+  }
+  function stopFC(){
+    cancelAnimationFrame(fcId); fcId=null;
+    document.getElementById('lv-fulcrum').setAttribute('transform','');
+  }
+
+  // brake squeeze
+  let bkId=null, bkT=0;
+  function startBK(){
+    cancelAnimationFrame(bkId);
+    const lA=document.getElementById('bl-left-arm');
+    const rA=document.getElementById('bl-right-arm');
+    function f(){
+      bkT+=0.1;
+      const d=Math.sin(bkT)*12;
+      lA.setAttribute('d',`M${78+d} 126 Q${84+d} 148 ${88+d} 160`);
+      rA.setAttribute('d',`M${258-d} 126 Q${264-d} 148 ${268-d} 160`);
+      bkId=requestAnimationFrame(f);
+    } f();
+  }
+  function stopBK(){
+    cancelAnimationFrame(bkId); bkId=null;
+    document.getElementById('bl-left-arm').setAttribute('d','M78 126 Q84 148 88 160');
+    document.getElementById('bl-right-arm').setAttribute('d','M258 126 Q264 148 268 160');
+  }
+
+  // output wheel spin
+  let owId=null, owA=0;
+  function startOW(){
+    cancelAnimationFrame(owId);
+    const sp=document.getElementById('lv-wheel-spokes');
+    function f(){
+      owA=(owA+4)%360;
+      sp.setAttribute('transform',`rotate(${owA},280,240)`);
+      owId=requestAnimationFrame(f);
+    } f();
+  }
+  function stopOW(){
+    cancelAnimationFrame(owId); owId=null;
+    document.getElementById('lv-wheel-spokes').setAttribute('transform','');
+  }
+
+  const lvParts = [
+    { id:'lv-handlebar',  start:startHB,  stop:stopHB,  tip:'🔧 Lever — rock the handlebars to steer the front wheel!' },
+    { id:'lv-fulcrum',    start:startFC,  stop:stopFC,  tip:'📍 Fulcrum — the pivot point everything rotates around!' },
+    { id:'lv-brake-left', start:startBK,  stop:stopBK,  tip:'🛑 Brake Lever — squeeze to activate the brake pads (wedge)!' },
+    { id:'lv-brake-right',start:startBK,  stop:stopBK,  tip:'🛑 Brake Lever — squeeze to activate the brake pads (wedge)!' },
+    { id:'lv-output',     start:startOW,  stop:stopOW,  tip:'⭕ Output — the front wheel turns as a result of the lever force!' },
+  ];
+  lvParts.forEach(({id,start,stop,tip})=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.style.cursor='pointer';
+    el.addEventListener('mouseenter',()=>{ showL(tip); start(); });
+    el.addEventListener('mouseleave',()=>{ hideL(); stop(); });
+  });
+})();
+</script>
+
+
+<!-- ══════════════════════════════════════
+     SLIDE 3 — STUDENT 3: WHEEL & AXLE + GEARS
+══════════════════════════════════════ -->
+<div class="slide bg-wheel" id="slide-3">
+  <div class="student-layout">
+
+    <div class="student-header">
+      <div class="student-title-block">
+        <div class="student-label">Simple Machine</div>
+        <div class="student-title" style="color:#FFA726;">Wheels &amp; Axle<br>= Rotation!</div>
+      </div>
+    </div>
+
+    <!-- LEFT: wheel & axle info -->
+    <div>
+      <div class="info-card" style="border-color:rgba(255,167,38,0.4);">
+        <h3 style="color:#FFA726;">⭕ What Is a Wheel &amp; Axle?</h3>
+        <p>A wheel and axle is a <strong style="color:#fff;">large wheel attached to a smaller rod (axle)</strong>. When the wheel spins, the axle spins too. It reduces friction and converts rotation into forward movement!</p>
+      </div>
+
+      <!-- Pulley / Chain section -->
+      <div class="info-card" style="margin-top:14px; border-color:rgba(255,167,38,0.3);">
+        <h3 style="color:#FFA726; font-size:16px;">⛓ Also a Pulley: The Chain &amp; Gears!</h3>
+        <p style="font-size:13.5px; margin-bottom:8px;">The chain is a <strong style="color:#fff;">pulley system</strong>. Power travels from your legs → pedals → chainring → chain → rear cog → rear wheel!</p>
+        <svg viewBox="0 0 300 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+          <!-- Boxes -->
+          <rect x="2" y="25" width="68" height="30" rx="8" fill="rgba(255,167,38,0.25)" stroke="#FFA726" stroke-width="1.5"/>
+          <text x="36" y="37" font-size="10" fill="#FFA726" font-family="Nunito,sans-serif" font-weight="700" text-anchor="middle">POWER IN</text>
+          <text x="36" y="50" font-size="9" fill="rgba(255,255,255,0.7)" font-family="Nunito,sans-serif" text-anchor="middle">Legs + Pedals</text>
+          <line x1="70" y1="40" x2="94" y2="40" stroke="#FFA726" stroke-width="2" marker-end="url(#ao)"/>
+          <rect x="95" y="25" width="110" height="30" rx="8" fill="rgba(255,167,38,0.2)" stroke="#FFA726" stroke-width="1.5"/>
+          <text x="150" y="37" font-size="10" fill="#FFA726" font-family="Nunito,sans-serif" font-weight="700" text-anchor="middle">TRANSMISSION</text>
+          <text x="150" y="50" font-size="9" fill="rgba(255,255,255,0.7)" font-family="Nunito,sans-serif" text-anchor="middle">Chain &amp; Gears (Pulley)</text>
+          <line x1="205" y1="40" x2="228" y2="40" stroke="#FFA726" stroke-width="2" marker-end="url(#ao)"/>
+          <rect x="229" y="25" width="68" height="30" rx="8" fill="rgba(255,167,38,0.3)" stroke="#FFA726" stroke-width="1.5"/>
+          <text x="263" y="37" font-size="10" fill="#FFA726" font-family="Nunito,sans-serif" font-weight="700" text-anchor="middle">OUTPUT</text>
+          <text x="263" y="50" font-size="9" fill="rgba(255,255,255,0.7)" font-family="Nunito,sans-serif" text-anchor="middle">Wheel spins!</text>
+          <defs>
+            <marker id="ao" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M2 2L8 5L2 8" fill="none" stroke="#FFA726" stroke-width="1.5" stroke-linecap="round"/>
+            </marker>
+          </defs>
+        </svg>
+        <ul>
+          <li><strong>Small chainring + big rear cog</strong> = more torque, easier to climb</li>
+          <li><strong>Big chainring + small rear cog</strong> = more speed on flat roads</li>
+        </ul>
+      </div>
+
+      <div class="quote-card">
+        <div class="words">"The wheels and the axle help us roll fast! They reduce friction so the bike moves smoothly."</div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: interactive wheel & gear illustration -->
+    <div class="illus-card" style="position:relative; padding:14px;">
+      <div class="illus-label">🖱️ Hover each part to see it spin!</div>
+      <div id="wheel-tooltip" style="
+        position:absolute; top:8px; left:50%; transform:translateX(-50%);
+        background:rgba(0,0,0,0.82); border:1.5px solid #FFA726; border-radius:12px;
+        padding:6px 14px; font-size:12px; font-weight:700; color:#FFE082;
+        pointer-events:none; opacity:0; transition:opacity 0.2s; white-space:nowrap; z-index:10;
+      "></div>
+
+      <svg id="wheel-svg" viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg" style="width:100%;">
+        <defs>
+          <marker id="arot2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M2 2L8 5L2 8" fill="none" stroke="#f9a825" stroke-width="1.5" stroke-linecap="round"/>
+          </marker>
+        </defs>
+
+        <!-- ── MAIN WHEEL (rim + tire) — hover spins it ── -->
+        <g id="wh-rim" style="cursor:pointer;">
+          <!-- Tire outer -->
+          <circle cx="130" cy="118" r="95" fill="none" stroke="#FFA726" stroke-width="9"/>
+          <circle cx="130" cy="118" r="95" fill="none" stroke="rgba(255,167,38,0.15)" stroke-width="16"/>
+          <!-- Rim -->
+          <circle cx="130" cy="118" r="78" fill="none" stroke="#E65100" stroke-width="3"/>
+        </g>
+
+        <!-- ── SPOKES — rotating group ── -->
+        <g id="wh-spokes" style="cursor:pointer;" transform="translate(130,118)">
+          <line x1="0" y1="-95" x2="0" y2="95" stroke="#FFA726" stroke-width="2.5"/>
+          <line x1="-95" y1="0" x2="95" y2="0" stroke="#FFA726" stroke-width="2.5"/>
+          <line x1="-67" y1="-67" x2="67" y2="67" stroke="#FFA726" stroke-width="2"/>
+          <line x1="67" y1="-67" x2="-67" y2="67" stroke="#FFA726" stroke-width="2"/>
+          <line x1="-45" y1="-84" x2="45" y2="84" stroke="#FFA726" stroke-width="1.5"/>
+          <line x1="45" y1="-84" x2="-45" y2="84" stroke="#FFA726" stroke-width="1.5"/>
+        </g>
+
+        <!-- ── HUB / AXLE — hover highlights ── -->
+        <g id="wh-hub" style="cursor:pointer;">
+          <circle cx="130" cy="118" r="20" fill="#E65100"/>
+          <circle cx="130" cy="118" r="9" fill="#FFA726"/>
+          <!-- axle rod through -->
+          <line x1="90" y1="118" x2="170" y2="118" stroke="#f9c023" stroke-width="6" stroke-linecap="round"/>
+        </g>
+
+        <!-- ── GEAR / CHAINRING — hover spins ── -->
+        <g id="wh-gear" style="cursor:pointer;" transform="translate(278,148)">
+          <!-- ring -->
+          <circle r="36" fill="none" stroke="#f9c023" stroke-width="5"/>
+          <circle r="13" fill="#E65100"/>
+          <!-- teeth group (rotates) -->
+          <g id="wh-gear-teeth">
+            <rect x="-6" y="-40" width="12" height="10" rx="2" fill="#f9c023"/>
+            <rect x="-6" y="30"  width="12" height="10" rx="2" fill="#f9c023"/>
+            <rect x="30"  y="-6" width="10" height="12" rx="2" fill="#f9c023"/>
+            <rect x="-40" y="-6" width="10" height="12" rx="2" fill="#f9c023"/>
+            <rect x="18"  y="-35" width="10" height="12" rx="2" fill="#f9c023" transform="rotate(45,23,-29)"/>
+            <rect x="-28" y="23"  width="10" height="12" rx="2" fill="#f9c023" transform="rotate(45,-22,29)"/>
+            <rect x="18"  y="23"  width="10" height="12" rx="2" fill="#f9c023" transform="rotate(-45,23,29)"/>
+            <rect x="-28" y="-35" width="10" height="12" rx="2" fill="#f9c023" transform="rotate(-45,-22,-29)"/>
+          </g>
+          <!-- center dot -->
+          <circle r="5" fill="#FFE082"/>
+        </g>
+
+        <!-- ── CHAIN — animated dashes ── -->
+        <g id="wh-chain" style="cursor:pointer;">
+          <path id="wh-chain-path" d="M228 141 Q210 130 200 118" fill="none" stroke="#FFE082" stroke-width="4" stroke-dasharray="8,5" stroke-linecap="round"/>
+          <!-- chain links visual -->
+          <circle cx="215" cy="135" r="4" fill="#f9c023" opacity="0.7"/>
+          <circle cx="222" cy="131" r="4" fill="#f9c023" opacity="0.7"/>
+        </g>
+
+        <!-- ── ROTATION ARC ARROW ── -->
+        <path d="M 130 16 A 102 102 0 0 1 232 118" fill="none" stroke="#f9a825" stroke-width="3" stroke-dasharray="8,5" marker-end="url(#arot2)"/>
+
+        <!-- ── LABELS ── -->
+        <text x="192" y="28"  font-size="12" fill="#ffffff" font-family="Nunito,sans-serif" font-weight="800">Rotation →</text>
+        <text x="136" y="152" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Axle (Hub)</text>
+        <text x="10"  y="106" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Rim</text>
+        <text x="248" y="198" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Gear/Pulley</text>
+
+        <!-- friction label -->
+        <rect x="28" y="205" width="188" height="26" rx="8" fill="rgba(0,0,0,0.45)" stroke="#FFE082" stroke-width="1.5"/>
+        <text x="122" y="222" font-size="12" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">⚡ Reduces Friction!</text>
+      </svg>
+
+      <div class="info-card" style="padding:10px 14px; margin-top:6px;">
+        <p style="font-size:12.5px;"><strong style="color:#FFA726;">Also wheel &amp; axle:</strong> Pedal axle, headset bearing, bottom bracket!</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const tip = document.getElementById('wheel-tooltip');
+  function showW(t){ tip.textContent=t; tip.style.opacity='1'; }
+  function hideW(){ tip.style.opacity='0'; }
+
+  let wAngle=0, gAngle=0, wId=null;
+
+  // spin wheel + gear together
+  function startWheel(fast){
+    cancelAnimationFrame(wId);
+    const speed = fast ? 5 : 2.5;
+    function f(){
+      wAngle=(wAngle+speed)%360;
+      gAngle=(gAngle+speed*1.6)%360;
+      document.getElementById('wh-spokes').setAttribute('transform',`translate(130,118) rotate(${wAngle})`);
+      document.getElementById('wh-gear-teeth').setAttribute('transform',`rotate(${gAngle})`);
+      // animate chain dash
+      const cp = document.getElementById('wh-chain-path');
+      cp.style.strokeDashoffset = -(wAngle*0.3)+'px';
+      wId=requestAnimationFrame(f);
+    } f();
+  }
+  function stopWheel(){
+    cancelAnimationFrame(wId); wId=null;
+    document.getElementById('wh-spokes').setAttribute('transform','translate(130,118)');
+    document.getElementById('wh-gear-teeth').setAttribute('transform','');
+  }
+
+  // hub pulse
+  let hubId=null, hubT=0;
+  function startHub(){
+    cancelAnimationFrame(hubId);
+    const el=document.getElementById('wh-hub');
+    function f(){
+      hubT+=0.08;
+      const s=1+Math.abs(Math.sin(hubT))*0.25;
+      el.setAttribute('transform',`translate(${130*(1-s)},${118*(1-s)}) scale(${s})`);
+      hubId=requestAnimationFrame(f);
+    } f();
+  }
+  function stopHub(){
+    cancelAnimationFrame(hubId); hubId=null;
+    document.getElementById('wh-hub').setAttribute('transform','');
+  }
+
+  // chain snake
+  let chainId=null, chainT=0;
+  function startChain(){
+    cancelAnimationFrame(chainId);
+    const cp=document.getElementById('wh-chain-path');
+    function f(){
+      chainT+=0.07;
+      const wave=Math.sin(chainT)*6;
+      cp.setAttribute('d',`M228 ${141+wave} Q210 ${130+wave} 200 118`);
+      chainT+=0.05;
+      chainId=requestAnimationFrame(f);
+    } f();
+    // also spin gear fast
+    startWheel(true);
+  }
+  function stopChain(){
+    cancelAnimationFrame(chainId); chainId=null;
+    document.getElementById('wh-chain-path').setAttribute('d','M228 141 Q210 130 200 118');
+    stopWheel();
+  }
+
+  const whParts=[
+    { id:'wh-rim',    start:()=>startWheel(false), stop:stopWheel, tip:'⭕ Wheel — spins around the axle, carrying the bike forward!' },
+    { id:'wh-spokes', start:()=>startWheel(false), stop:stopWheel, tip:'🕸️ Spokes — connect rim to hub, distribute the load evenly!' },
+    { id:'wh-hub',    start:startHub,              stop:stopHub,   tip:'🔵 Hub (Axle) — the fixed center that reduces friction to near zero!' },
+    { id:'wh-gear',   start:()=>startWheel(true),  stop:stopWheel, tip:'⚙️ Gear — teeth mesh with chain, multiplying pedal force!' },
+    { id:'wh-chain',  start:startChain,            stop:stopChain, tip:'⛓️ Chain (Pulley) — transfers rotational power from pedal to wheel!' },
+  ];
+  whParts.forEach(({id,start,stop,tip})=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.style.cursor='pointer';
+    el.addEventListener('mouseenter',()=>{ showW(tip); start(); });
+    el.addEventListener('mouseleave',()=>{ hideW(); stop(); });
+  });
+})();
+</script>
+
+
+<!-- ══════════════════════════════════════
+     SLIDE 4 — STUDENT 4: CONCLUSION
+══════════════════════════════════════ -->
+<div class="slide bg-conc" id="slide-4">
+  <div class="conc-layout">
+
+    <div class="student-header" style="justify-content:center; margin-bottom:12px;">
+      <div class="student-title-block">
+        <div class="student-label">Conclusion</div>
+        <div class="student-title" style="color:#ce93d8;">The Perfect Team<br>of Machines! 🚴</div>
+      </div>
+    </div>
+
+    <!-- Recap cards -->
+    <div class="recap-grid">
+      <div class="recap-card rc-blue">
+        <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+          <rect x="6" y="25" width="44" height="8" rx="4" fill="#42A5F5"/>
+          <circle cx="28" cy="29" r="7" fill="#1565C0"/>
+          <rect x="4" y="21" width="10" height="14" rx="3" fill="#90CAF9"/>
+          <rect x="42" y="21" width="10" height="14" rx="3" fill="#42A5F5" opacity="0.6"/>
+        </svg>
+        <div class="rc-name">Lever</div>
+        <div class="rc-part">Handlebars &amp; Brakes</div>
+      </div>
+      <div class="recap-card rc-green">
+        <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="28" cy="28" r="22" fill="none" stroke="#66BB6A" stroke-width="4"/>
+          <circle cx="28" cy="28" r="7" fill="#2E7D32"/>
+          <line x1="28" y1="6" x2="28" y2="50" stroke="#66BB6A" stroke-width="2"/>
+          <line x1="6" y1="28" x2="50" y2="28" stroke="#66BB6A" stroke-width="2"/>
+          <line x1="12" y1="12" x2="44" y2="44" stroke="#66BB6A" stroke-width="2"/>
+          <line x1="44" y1="12" x2="12" y2="44" stroke="#66BB6A" stroke-width="2"/>
+        </svg>
+        <div class="rc-name">Wheel &amp; Axle</div>
+        <div class="rc-part">Wheels &amp; Pedals</div>
+      </div>
+      <div class="recap-card rc-orange">
+        <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="28" cy="28" r="18" fill="none" stroke="#FFA726" stroke-width="4"/>
+          <circle cx="28" cy="28" r="7" fill="#E65100"/>
+          <path d="M10 28 Q28 42 46 28" fill="none" stroke="#888" stroke-width="3" stroke-dasharray="4,3"/>
+          <rect x="21" y="18" width="14" height="8" rx="2" fill="#FFA726"/>
+          <rect x="21" y="30" width="14" height="8" rx="2" fill="#FFA726"/>
+        </svg>
+        <div class="rc-name">Pulley</div>
+        <div class="rc-part">Chain &amp; Gears</div>
+      </div>
+      <div class="recap-card rc-pink">
+        <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="8" width="16" height="16" rx="3" fill="#F06292"/>
+          <rect x="14" y="10" width="28" height="8" rx="2" fill="#AD1457"/>
+          <rect x="24" y="24" width="8" height="24" rx="2" fill="#F06292"/>
+          <line x1="24" y1="30" x2="32" y2="30" stroke="#AD1457" stroke-width="2"/>
+          <line x1="24" y1="36" x2="32" y2="36" stroke="#AD1457" stroke-width="2"/>
+          <line x1="24" y1="42" x2="32" y2="42" stroke="#AD1457" stroke-width="2"/>
+        </svg>
+        <div class="rc-name">Screw</div>
+        <div class="rc-part">Bolts &amp; Nuts</div>
+      </div>
+    </div>
+
+    <!-- Chips row -->
+    <div class="chips-row">
+      <div class="chip-item">⚡ Efficient</div>
+      <div class="chip-item">🌍 Eco-Friendly</div>
+      <div class="chip-item">🎉 Fun &amp; Fast</div>
+      <div class="chip-item">💪 Human-Powered</div>
+      <div class="chip-item">🔬 Science in Real Life!</div>
+    </div>
+
+    <!-- Quote + tip -->
+    <div class="conc-quote">
+      "In conclusion, the bicycle is the perfect team of machines. It's fast, fun, and eco-friendly! <strong>Thank you!</strong>"
+    </div>
+
+
+  </div>
+</div>
+
+
+<script>
+  // ── Stars ──
+  var starsEl = document.getElementById('stars');
+  for (var i = 0; i < 55; i++) {
+    var s = document.createElement('div');
+    s.className = 'star';
+    var size = Math.random() * 3 + 1;
+    s.style.cssText = 'width:'+size+'px;height:'+size+'px;top:'+(Math.random()*100)+'%;left:'+(Math.random()*100)+'%;animation-delay:'+(Math.random()*3)+'s;animation-duration:'+(2+Math.random()*3)+'s';
+    starsEl.appendChild(s);
+  }
+
+  // ── Slide system — all global so onclick="..." works in any WebView ──
+  var _slides = document.querySelectorAll('.slide');
+  var _dots   = document.querySelectorAll('.dot');
+  var _total  = _slides.length;
+  var _cur    = 0;
+  var _busy   = false;
+
+  function navTo(n) {
+    n = +n;
+    if (_busy || isNaN(n) || n < 0 || n >= _total || n === _cur) return;
+    _busy = true;
+
+    _slides[_cur].classList.remove('active');
+    _slides[_cur].classList.add('exit-left');
+    var prev = _cur;
+    _cur = n;
+    _slides[_cur].classList.add('active');
+
+    for (var i = 0; i < _dots.length; i++) {
+      _dots[i].classList.toggle('active', i === _cur);
+    }
+    var pct = _total > 1 ? Math.round((_cur / (_total - 1)) * 100) : 0;
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('slide-counter').textContent = (_cur + 1) + ' / ' + _total;
+
+    setTimeout(function() {
+      _slides[prev].classList.remove('exit-left');
+      _busy = false;
+    }, 620);
+  }
+
+  function navGo(dir) {
+    navTo(_cur + dir);
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navGo(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   navGo(-1);
+  });
+
+  // Swipe
+  var _tx = 0, _ty = 0;
+  document.getElementById('app').addEventListener('touchstart', function(e) {
+    _tx = e.touches[0].clientX;
+    _ty = e.touches[0].clientY;
+  }, {passive: true});
+  document.getElementById('app').addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - _tx;
+    var dy = e.changedTouches[0].clientY - _ty;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      navGo(dx < 0 ? 1 : -1);
+    }
+  }, {passive: true});
+
+  // Init
+  document.getElementById('progress-bar').style.width = '0%';
+</script>
+</div>
+</body>
+</html>
