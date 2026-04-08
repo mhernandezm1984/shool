@@ -115,12 +115,20 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 .slide.active .rc:nth-child(5){animation-delay:.32s}
 .slide.active .rc:nth-child(6){animation-delay:.4s}
 @keyframes popIn{from{opacity:0;transform:scale(.88) translateY(13px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.bg-uses{background:linear-gradient(145deg,#1565C0,#1976D2,#0D47A1)}
+.uses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%}
+.use-card{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:16px;padding:15px 16px;display:flex;align-items:flex-start;gap:12px;backdrop-filter:blur(4px)}
+.use-icon{font-size:32px;flex-shrink:0;line-height:1;margin-top:2px}
+.use-en{font-family:"Fredoka One",cursive;font-size:18px;color:#FFD600;line-height:1.1;margin-bottom:2px}
+.use-es{font-size:12px;color:rgba(255,255,255,.6);font-weight:700;font-style:italic;margin-bottom:6px}
+.use-ex{font-size:14px;color:#fff;font-weight:700;line-height:1.45}
+.use-es2{font-size:11px;color:rgba(255,255,255,.6);line-height:1.35;font-style:italic}
 </style>
 </head>
 <body>
 <div id="app">
 <div id="progress-bar"></div>
-<div id="slide-counter">1 / 8</div>
+<div id="slide-counter">1 / 9</div>
 <div class="tap-zone" id="tap-prev" onclick="navGo(-1)"><div class="nav-arrow">&#8592;</div></div>
 <div class="tap-zone" id="tap-next" onclick="navGo(1)"><div class="nav-arrow">&#8594;</div></div>
 <div id="nav-dots">
@@ -132,6 +140,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
   <div class="dot" onclick="navTo(5)"></div>
   <div class="dot" onclick="navTo(6)"></div>
   <div class="dot" onclick="navTo(7)"></div>
+  <div class="dot" onclick="navTo(8)"></div>
 </div>
 <div id="key-hint">swipe or tap sides</div>
 
@@ -198,11 +207,57 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 </div>
 
 <!-- SLIDE 2: LEVER -->
-<div class="slide bg-wheel" id="slide-2">
+<div class="slide bg-uses" id="slide-2">
+  <div class="sl">
+    <div class="sh"><div class="sl-ttl">🚲 Uses of a Bicycle</div></div>
+    <div class="uses-grid">
+      <div class="use-card">
+        <div class="use-icon">🚌</div>
+        <div class="use-body">
+          <div class="use-en">Transportation</div>
+          <div class="use-es">Transporte</div>
+          <div class="use-ex">To go to school.</div>
+        </div>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">💪</div>
+        <div class="use-body">
+          <div class="use-en">Exercise</div>
+          <div class="use-ex">Riding a bicycle is a good way to stay healthy.</div>
+        </div>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">🎉</div>
+        <div class="use-body">
+          <div class="use-en">Recreation</div>
+          <div class="use-es">Recreación</div>
+          <div class="use-ex">We ride our bikes in the park for fun.</div>
+        </div>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">📦</div>
+        <div class="use-body">
+          <div class="use-en">Work</div>
+          <div class="use-ex">To deliver food.</div>
+        </div>
+      </div>
+      <div class="use-card">
+        <div class="use-icon">🌿</div>
+        <div class="use-body">
+          <div class="use-en">Protecting the Environment</div>
+          <div class="use-ex">Bicycles do not produce pollution.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide bg-wheel" id="slide-3">
   <div class="sl">
     <div class="sh"><div class="sl-ttl" style="color:#FFA726">⭕ Wheel &amp; Axle</div></div>
     <div>
       <div class="ic" style="border-color:rgba(255,167,38,.4)"><h3 style="color:#FFA726">What is it?</h3><p>A <strong style="color:#fff">big wheel connected to a small rod</strong> (axle). When the wheel spins, the axle spins too! It makes things move <strong style="color:#FFE082">easier and smoother</strong>.</p></div>
+      <div class="ic" style="margin-top:10px;border-color:rgba(255,167,38,.5)"><h3 style="color:#FFD600">🚲 On the Bicycle:</h3><ul style="list-style:none;padding-left:0"><li style="margin-bottom:6px">🔵 <strong>The wheels</strong> turn on the axle to go.</li><li style="margin-bottom:6px">🟡 <strong>The pedals</strong> turn the axle to roll.</li><li>🔩 <strong>The hub</strong> joins the wheel and axle.</li></ul></div>
       <div class="qc"><div class="w">"The wheels and the axle help us roll fast! They reduce friction so the bike moves smoothly."</div></div>
     </div>
     <div class="ilc">
@@ -226,7 +281,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 </div>
 
 <!-- SLIDE 4: PULLEY -->
-<div class="slide bg-lever" id="slide-3">
+<div class="slide bg-lever" id="slide-4">
   <div class="sl">
     <div class="sh"><div class="sl-ttl" style="color:#66BB6A">🔧 The Lever</div></div>
     <div>
@@ -254,7 +309,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 </div>
 
 <!-- SLIDE 3: WHEEL & AXLE -->
-<div class="slide bg-wedge" id="slide-4">
+<div class="slide bg-wedge" id="slide-5">
   <div class="sl">
     <div class="sh"><div class="sl-ttl" style="color:#4DB6AC">🛑 The Wedge</div></div>
     <div>
@@ -316,7 +371,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
     </div>
   </div>
 </div>
-<div class="slide bg-pulley" id="slide-5">
+<div class="slide bg-pulley" id="slide-6">
   <div class="sl">
     <div class="sh"><div class="sl-ttl" style="color:#64B5F6">⛓ The Pulley</div></div>
     <div>
@@ -343,7 +398,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 </div>
 
 <!-- SLIDE 5: SCREW -->
-<div class="slide bg-screw" id="slide-6">
+<div class="slide bg-screw" id="slide-7">
   <div class="sl">
     <div class="sh"><div class="sl-ttl" style="color:#F48FB1">🔩 The Screw</div></div>
     <div>
