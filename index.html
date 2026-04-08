@@ -7,89 +7,104 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:'Nunito',sans-serif}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
 #app{position:fixed;inset:0;overflow:hidden}
-.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 28px;opacity:0;pointer-events:none;transform:translateX(60px);transition:opacity .5s ease,transform .5s ease}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 28px;opacity:0;pointer-events:none;transform:translateX(60px);transition:opacity .5s ease,transform .5s ease}
 .slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
 .slide.exit-left{opacity:0;transform:translateX(-60px);pointer-events:none}
-.bg-cover{background:linear-gradient(145deg,#0d1b2a,#1a3a5c,#0d2137)}
-.bg-intro{background:linear-gradient(145deg,#0d1b2a,#1a3a5c,#0d2137)}
-.bg-lever{background:linear-gradient(145deg,#0a3d1e,#1b5e35,#0a2d16)}
-.bg-wheel{background:linear-gradient(145deg,#3e1f00,#7c3d00,#4a2500)}
-.bg-pulley{background:linear-gradient(145deg,#00234a,#004a8a,#001c3a)}
-.bg-screw{background:linear-gradient(145deg,#3d0025,#8a0055,#2d001c)}
-.bg-wedge{background:linear-gradient(145deg,#003d30,#007a60,#002d24)}
-.bg-incl{background:linear-gradient(145deg,#2d0050,#6a0090,#1e0038)}
-.bg-conc{background:linear-gradient(145deg,#1a0033,#4a0e6e,#2d0050)}
+
+/* ── BRIGHT KID-FRIENDLY BACKGROUNDS ── */
+.bg-cover  {background:linear-gradient(145deg,#1565C0,#1976D2,#0D47A1)}
+.bg-intro  {background:linear-gradient(145deg,#6A1B9A,#7B1FA2,#4A148C)}
+.bg-lever  {background:linear-gradient(145deg,#2E7D32,#388E3C,#1B5E20)}
+.bg-wheel  {background:linear-gradient(145deg,#0097A7,#00ACC1,#006064)}
+.bg-pulley {background:linear-gradient(145deg,#0277BD,#0288D1,#01579B)}
+.bg-screw  {background:linear-gradient(145deg,#AD1457,#C2185B,#880E4F)}
+.bg-wedge  {background:linear-gradient(145deg,#00695C,#00796B,#004D40)}
+.bg-conc   {background:linear-gradient(145deg,#4527A0,#512DA8,#311B92)}
+
+/* ── DECORATIVE DOTS ── */
 .stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle 3s infinite alternate}
-@keyframes twinkle{from{opacity:.2}to{opacity:.9}}
-#progress-bar{position:absolute;top:0;left:0;height:5px;background:linear-gradient(90deg,#f9a825,#ff6f00);transition:width .5s;z-index:100;border-radius:0 3px 3px 0}
-#slide-counter{position:absolute;top:12px;right:14px;color:rgba(255,255,255,.55);font-size:12px;font-weight:700;letter-spacing:1px;z-index:100}
-.tap-zone{position:absolute;top:0;bottom:0;width:20%;z-index:200;cursor:pointer;-webkit-tap-highlight-color:rgba(255,255,255,.06);touch-action:manipulation}
+.star{position:absolute;border-radius:50%;background:rgba(255,255,255,.25);animation:twinkle 3s infinite alternate}
+@keyframes twinkle{from{opacity:.15}to{opacity:.7}}
+
+/* ── PROGRESS & NAV ── */
+#progress-bar{position:absolute;top:0;left:0;height:6px;background:linear-gradient(90deg,#FFD600,#FF6F00);transition:width .5s;z-index:100;border-radius:0 4px 4px 0;box-shadow:0 0 8px rgba(255,214,0,.6)}
+#slide-counter{position:absolute;top:14px;right:16px;color:rgba(255,255,255,.75);font-size:13px;font-weight:800;letter-spacing:1px;z-index:100;background:rgba(0,0,0,.2);padding:3px 10px;border-radius:20px}
+.tap-zone{position:absolute;top:0;bottom:0;width:20%;z-index:200;cursor:pointer;-webkit-tap-highlight-color:rgba(255,255,255,.08);touch-action:manipulation}
 #tap-prev{left:0}#tap-next{right:0}
-.nav-arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.3);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;pointer-events:none}
-#tap-prev .nav-arrow{left:6px}#tap-next .nav-arrow{right:6px}
-#nav-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:100}
-.dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.28);cursor:pointer;border:2px solid rgba(255,255,255,.45);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.dot.active{background:#f9a825;border-color:#f9a825;transform:scale(1.3)}
-#key-hint{position:absolute;bottom:46px;right:14px;font-size:10px;color:rgba(255,255,255,.2);font-weight:700}
-/* Cover */
-.cover-title{font-family:'Fredoka One',cursive;font-size:clamp(32px,5vw,66px);color:#fff;text-align:center;line-height:1.05;text-shadow:0 4px 24px rgba(0,0,0,.5);animation:fadeUp .8s ease both}
-.cover-title span{color:#f9a825}
-.cover-sub{font-size:clamp(12px,1.5vw,16px);color:rgba(255,255,255,.6);text-align:center;margin-top:8px;animation:fadeUp .8s .2s ease both}
-.cover-names{display:flex;flex-wrap:wrap;gap:5px 16px;justify-content:center;margin-top:10px;animation:fadeUp .8s .35s ease both}
-.cover-names span{font-size:clamp(11px,1.4vw,14px);color:#FFE082;font-weight:700}
+.nav-arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.22);border:2.5px solid rgba(255,255,255,.45);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+#tap-prev .nav-arrow{left:8px}#tap-next .nav-arrow{right:8px}
+#nav-dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100}
+.dot{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;border:2px solid rgba(255,255,255,.55);touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .2s}
+.dot.active{background:#FFD600;border-color:#FFD600;transform:scale(1.4)}
+#key-hint{position:absolute;bottom:48px;right:16px;font-size:10px;color:rgba(255,255,255,.3);font-weight:700}
+
+/* ── COVER SLIDE ── */
+.cover-title{font-family:'Fredoka One',cursive;font-size:clamp(34px,5.5vw,70px);color:#fff;text-align:center;line-height:1.05;text-shadow:0 4px 20px rgba(0,0,0,.35);animation:fadeUp .8s ease both}
+.cover-title span{color:#FFD600}
+.cover-sub{font-size:clamp(13px,1.6vw,17px);color:rgba(255,255,255,.8);text-align:center;margin-top:8px;font-weight:700;animation:fadeUp .8s .2s ease both}
+.cover-names{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin-top:10px;animation:fadeUp .8s .35s ease both}
+.cover-names span{font-size:clamp(12px,1.4vw,15px);color:#FFE082;font-weight:800}
 .gear-wrap{width:220px;height:170px;margin:14px auto 0;animation:fadeUp .8s .3s ease both}
 .gear-big{animation:spin 6s linear infinite;transform-origin:90px 100px}
 .gear-small{animation:spin 6s linear infinite reverse;transform-origin:190px 80px}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.machine-pills{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:14px;animation:fadeUp .8s .6s ease both}
-.pill{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.25);border-radius:30px;padding:4px 12px;color:#fff;font-size:12px;font-weight:700}
+.machine-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;animation:fadeUp .8s .6s ease both}
+.pill{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.4);border-radius:30px;padding:5px 14px;color:#fff;font-size:13px;font-weight:800}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-/* Layout */
-.sl{width:100%;max-width:1100px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
-.sh{grid-column:1/-1;margin-bottom:2px}
-.sl-lbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.6;color:#fff;margin-bottom:2px}
-.sl-ttl{font-family:'Fredoka One',cursive;font-size:clamp(20px,3.2vw,38px);color:#fff;line-height:1.05}
-/* Cards */
-.ic{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.18);border-radius:16px;padding:16px 18px}
-.ic h3{font-family:'Fredoka One',cursive;font-size:17px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
-.ic p{font-size:13px;line-height:1.65;color:rgba(255,255,255,.85)}
-.ic ul{margin-top:7px;padding-left:15px}
-.ic li{font-size:12.5px;line-height:1.7;color:rgba(255,255,255,.82)}
-.ic li strong{color:#fff}
-.qc{background:rgba(255,255,255,.12);border-left:4px solid #f9a825;border-radius:0 13px 13px 0;padding:11px 15px;margin-top:9px}
-.qc .w{font-size:13.5px;font-style:italic;color:#fff;line-height:1.55}
-.ilc{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:16px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
+
+/* ── LAYOUT GRID ── */
+.sl{width:100%;max-width:1100px;display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.sh{grid-column:1/-1;margin-bottom:4px}
+.sl-ttl{font-family:'Fredoka One',cursive;font-size:clamp(24px,3.5vw,42px);color:#fff;line-height:1.05;text-shadow:0 2px 8px rgba(0,0,0,.25)}
+
+/* ── INFO CARDS ── */
+.ic{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:18px;padding:16px 20px;backdrop-filter:blur(4px)}
+.ic h3{font-family:'Fredoka One',cursive;font-size:20px;margin-bottom:8px;display:flex;align-items:center;gap:7px;color:#FFE082}
+.ic p{font-size:15px;line-height:1.7;color:#fff}
+.ic ul{margin-top:8px;padding-left:18px}
+.ic li{font-size:14px;line-height:1.75;color:#fff}
+.ic li strong{color:#FFE082}
+.ic strong{color:#FFE082}
+
+/* ── QUOTE CARD ── */
+.qc{background:rgba(255,255,255,.15);border-left:5px solid #FFD600;border-radius:0 16px 16px 0;padding:13px 18px;margin-top:10px;backdrop-filter:blur(4px)}
+.qc .w{font-size:15px;font-style:italic;color:#fff;line-height:1.6;font-weight:700}
+
+/* ── INTERACTIVE PANEL ── */
+.ilc{background:rgba(0,0,0,.18);border:2px solid rgba(255,255,255,.22);border-radius:18px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
 .ilc svg{width:100%;max-width:360px;height:auto}
-.il-lbl{font-family:'Fredoka One',cursive;font-size:13px;color:rgba(255,255,255,.9);text-align:center}
-/* Parts grid - always 6 */
-.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;margin-top:4px}
-.pi{background:rgba(255,255,255,.08);border-radius:11px;padding:9px 5px;text-align:center;border:1px solid rgba(255,255,255,.12);cursor:pointer;transition:transform .15s,border-color .15s}
-.pi:hover,.pi.ap{transform:scale(1.07);border-color:#f9a825}
-.pi svg{width:42px;height:42px}
-.pn{font-size:10px;font-weight:800;color:#fff;margin-top:4px;line-height:1.3}
-.pr{font-size:9px;color:rgba(255,255,255,.5);margin-top:1px}
-.stt{position:absolute;top:7px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);border:1.5px solid #f9a825;border-radius:10px;padding:5px 12px;font-size:11px;font-weight:700;color:#FFE082;pointer-events:none;opacity:0;transition:opacity .2s;white-space:nowrap;z-index:10}
+.il-lbl{font-family:'Fredoka One',cursive;font-size:15px;color:#FFE082;text-align:center}
+
+/* ── ICON GRID (slide 1) ── */
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:100%;margin-top:6px}
+.pi{background:rgba(255,255,255,.14);border-radius:13px;padding:10px 6px;text-align:center;border:2px solid rgba(255,255,255,.25);cursor:pointer;transition:transform .15s,border-color .15s,background .15s}
+.pi:hover,.pi.ap{transform:scale(1.08);border-color:#FFD600;background:rgba(255,255,255,.25)}
+.pi svg{width:44px;height:44px}
+.pn{font-size:11px;font-weight:800;color:#fff;margin-top:5px;line-height:1.3}
+.pr{font-size:9.5px;color:rgba(255,255,255,.65);margin-top:2px}
+.stt{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.88);border:2px solid #FFD600;border-radius:12px;padding:5px 14px;font-size:12px;font-weight:800;color:#FFE082;pointer-events:none;opacity:0;transition:opacity .2s;white-space:nowrap;z-index:10}
 .bp{cursor:pointer}
-/* Conclusion */
-.cl{width:100%;max-width:920px;text-align:center}
-.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
-.rc{border-radius:13px;padding:12px 8px;text-align:center}
-.rc svg{width:46px;height:46px;margin:0 auto 5px;display:block}
-.rcn{font-family:'Fredoka One',cursive;font-size:13px;color:#fff}
-.rcp{font-size:9.5px;color:rgba(255,255,255,.6);margin-top:2px}
-.rb{background:rgba(21,101,192,.35);border:2px solid rgba(66,165,245,.5)}
-.rg2{background:rgba(46,125,50,.35);border:2px solid rgba(102,187,106,.5)}
-.ro{background:rgba(230,81,0,.35);border:2px solid rgba(255,167,38,.5)}
-.rp{background:rgba(173,20,87,.35);border:2px solid rgba(240,98,146,.5)}
-.rt{background:rgba(0,96,80,.35);border:2px solid rgba(0,200,160,.5)}
-.rpu{background:rgba(90,0,160,.35);border:2px solid rgba(180,100,255,.5)}
-.cr{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:13px}
-.ci{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.25);border-radius:40px;padding:7px 16px;font-size:12.5px;font-weight:800;color:#fff}
-.cq{background:rgba(255,255,255,.08);border:2px solid rgba(206,147,216,.5);border-radius:16px;padding:13px 22px;font-size:14px;font-style:italic;color:#fff;line-height:1.6}
-/* Entrance anims */
+
+/* ── CONCLUSION ── */
+.cl{width:100%;max-width:940px;text-align:center}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.rc{border-radius:16px;padding:14px 10px;text-align:center;border:2.5px solid}
+.rc svg{width:48px;height:48px;margin:0 auto 6px;display:block}
+.rcn{font-family:'Fredoka One',cursive;font-size:15px;color:#fff}
+.rcp{font-size:10px;color:rgba(255,255,255,.7);margin-top:3px;font-weight:700}
+.rb {background:rgba(25,118,210,.4);border-color:rgba(100,181,246,.7)}
+.rg2{background:rgba(46,125,50,.4);border-color:rgba(102,187,106,.7)}
+.ro {background:rgba(230,81,0,.4);border-color:rgba(255,167,38,.7)}
+.rp {background:rgba(173,20,87,.4);border-color:rgba(240,98,146,.7)}
+.rt {background:rgba(0,105,92,.4);border-color:rgba(0,200,160,.7)}
+.rpu{background:rgba(90,0,160,.4);border-color:rgba(180,100,255,.7)}
+.cr{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px}
+.ci{background:rgba(255,255,255,.16);border:2.5px solid rgba(255,255,255,.35);border-radius:40px;padding:8px 18px;font-size:14px;font-weight:800;color:#fff}
+.cq{background:rgba(255,255,255,.13);border:2.5px solid rgba(255,214,0,.5);border-radius:18px;padding:14px 24px;font-size:15px;font-style:italic;color:#fff;line-height:1.65;font-weight:700}
+
+/* ── ANIMATIONS ── */
 .slide.active .ic,.slide.active .ilc,.slide.active .sh,.slide.active .qc,.slide.active .rc,.slide.active .ci{animation:popIn .48s ease both}
 .slide.active .ic+.ic{animation-delay:.1s}
 .slide.active .ilc{animation-delay:.14s}
@@ -129,18 +144,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
   <div class="gear-wrap"><svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg"><g class="gear-big"><circle cx="90" cy="100" r="52" fill="none" stroke="#f9a825" stroke-width="6"/><circle cx="90" cy="100" r="18" fill="#1a3a5c" stroke="#f9a825" stroke-width="4"/><rect x="82" y="40" width="16" height="14" rx="3" fill="#f9a825"/><rect x="82" y="146" width="16" height="14" rx="3" fill="#f9a825"/><rect x="30" y="92" width="14" height="16" rx="3" fill="#f9a825"/><rect x="136" y="92" width="14" height="16" rx="3" fill="#f9a825"/><line x1="90" y1="60" x2="90" y2="140" stroke="#f9a825" stroke-width="2.5"/><line x1="50" y1="80" x2="130" y2="120" stroke="#f9a825" stroke-width="2.5"/><line x1="130" y1="80" x2="50" y2="120" stroke="#f9a825" stroke-width="2.5"/></g><g class="gear-small"><circle cx="190" cy="80" r="34" fill="none" stroke="#42A5F5" stroke-width="5"/><circle cx="190" cy="80" r="12" fill="#1a3a5c" stroke="#42A5F5" stroke-width="3.5"/><rect x="183" y="40" width="14" height="11" rx="2.5" fill="#42A5F5"/><rect x="183" y="109" width="14" height="11" rx="2.5" fill="#42A5F5"/><rect x="150" y="73" width="11" height="14" rx="2.5" fill="#42A5F5"/><rect x="219" y="73" width="11" height="14" rx="2.5" fill="#42A5F5"/><line x1="190" y1="50" x2="190" y2="110" stroke="#42A5F5" stroke-width="2"/><line x1="160" y1="65" x2="220" y2="95" stroke="#42A5F5" stroke-width="2"/><line x1="220" y1="65" x2="160" y2="95" stroke="#42A5F5" stroke-width="2"/></g></svg></div>
   <div class="machine-pills">
     <div class="pill">🔧 Lever</div><div class="pill">⭕ Wheel &amp; Axle</div><div class="pill">⛓ Pulley</div>
-    <div class="pill">🔩 Screw</div><div class="pill">🪓 Wedge</div><div class="pill">📐 Inclined Plane</div>
+    <div class="pill">🔩 Screw</div><div class="pill"><svg viewBox="0 0 20 20" style="width:16px;height:16px;vertical-align:middle;margin-right:4px"><circle cx="10" cy="10" r="6" fill="none" stroke="#4DB6AC" stroke-width="1.8"/><circle cx="10" cy="10" r="2" fill="#00695C"/><line x1="10" y1="4" x2="10" y2="16" stroke="#4DB6AC" stroke-width="1"/><line x1="4" y1="10" x2="16" y2="10" stroke="#4DB6AC" stroke-width="1"/><polygon points="1,7 5,10 1,13" fill="#FFE082"/><polygon points="19,7 15,10 19,13" fill="#FFE082"/></svg> Wedge</div>
   </div>
 </div>
 
 <!-- SLIDE 1: WHAT IS A COMPLEX MACHINE -->
 <div class="slide bg-intro" id="slide-1">
   <div class="sl">
-    <div class="sh"><div class="sl-lbl">Introduction</div><div class="sl-ttl">What Is a Complex Machine?</div></div>
+    <div class="sh"><div class="sl-ttl">What Is a Complex Machine?</div></div>
     <div>
-      <div class="ic" style="border-color:rgba(66,165,245,.4)"><h3 style="color:#42A5F5">⚙️ Simple Machine</h3><p>A <strong style="color:#fff">simple machine</strong> is a tool that makes work easier! It helps us push, pull or lift things with <strong style="color:#fff">less effort</strong>. There are <strong style="color:#FFE082">6 kinds</strong>!</p></div>
-      <div class="ic" style="margin-top:10px;border-color:rgba(249,168,37,.4)"><h3 style="color:#f9a825">🔗 Complex Machine</h3><p>A <strong style="color:#fff">complex machine</strong> combines <strong style="color:#f9a825">2 or more simple machines</strong> as a team. Each one helps the next one!</p><ul style="margin-top:7px"><li>More powerful than alone</li><li>Each part has a special job</li><li>Together = amazing things! 🚀</li></ul></div>
-      <div class="qc"><div class="w">"This is a complex machine. It is made of many simple machines working together as a team!"</div></div>
+      <div class="ic" style="margin-top:10px;border-color:rgba(249,168,37,.4)"><h3 style="color:#f9a825">🔗 Complex Machine</h3><p>A <strong style="color:#fff">complex machine</strong> is a mechanical device formed by the union of <strong style="color:#f9a825">two or more simple machines</strong>. Each one helps the next one.</p><ul style="margin-top:7px"><li>More powerful than alone</li><li>Each part has a special job</li><li>Together = amazing things! 🚀</li></ul></div>
+      <div class="qc"><div class="w">"A bicycle is a complex machine. It is made of many simple machines working together as a team!"</div></div>
     </div>
     <!-- INTERACTIVE BIKE -->
     <div class="ilc">
@@ -155,23 +169,29 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
         <g id="bk-hb" class="bp" style="transform-origin:195px 48px"><line x1="195" y1="55" x2="195" y2="32" stroke="#aaa" stroke-width="5"/><line x1="168" y1="28" x2="222" y2="28" stroke="#ccc" stroke-width="9" stroke-linecap="round"/><circle cx="168" cy="28" r="5" fill="#66BB6A"/><circle cx="222" cy="28" r="5" fill="#66BB6A"/></g>
         <g id="bk-ch" class="bp"><path d="M212 185 Q250 185 280 183" fill="none" stroke="#f9c023" stroke-width="4" stroke-dasharray="8,5"/></g>
         <g id="bk-ge" class="bp" transform="translate(190,185)"><circle r="22" fill="none" stroke="#f9c023" stroke-width="4"/><circle r="8" fill="#f9c023"/><g id="bk-gt"><rect x="-4" y="-26" width="8" height="8" rx="2" fill="#f9c023"/><rect x="-4" y="18" width="8" height="8" rx="2" fill="#f9c023"/><rect x="18" y="-4" width="8" height="8" rx="2" fill="#f9c023"/><rect x="-26" y="-4" width="8" height="8" rx="2" fill="#f9c023"/></g><line x1="0" y1="0" x2="18" y2="14" stroke="#f9c023" stroke-width="4"/></g>
-        <g id="bk-br" class="bp"><rect id="bk-bfl" x="272" y="120" width="6" height="18" rx="2" fill="#80cbc4"/><rect id="bk-bfr" x="284" y="120" width="6" height="18" rx="2" fill="#80cbc4"/><rect id="bk-bbl" x="82" y="120" width="6" height="18" rx="2" fill="#80cbc4"/><rect id="bk-bbr" x="94" y="120" width="6" height="18" rx="2" fill="#80cbc4"/></g>
+        <g id="bk-br" class="bp">
+          <!-- Front brake wedge pads (right wheel at x=290) -->
+          <polygon id="bk-bfl" points="268,114 255,130 268,146" fill="#FFE082"/>
+          <polygon id="bk-bfr" points="312,114 325,130 312,146" fill="#FFE082"/>
+          <!-- Back brake wedge pads (left wheel at x=100) -->
+          <polygon id="bk-bbl" points="80,114 67,130 80,146" fill="#FFE082"/>
+          <polygon id="bk-bbr" points="120,114 133,130 120,146" fill="#FFE082"/>
+        </g>
         <g id="bk-sc" class="bp"><circle cx="160" cy="90" r="5" fill="#F06292"/><circle cx="100" cy="185" r="5" fill="#F06292"/><circle cx="290" cy="185" r="5" fill="#F06292"/><circle cx="190" cy="185" r="5" fill="#F06292"/></g>
         <g id="bk-ip" class="bp"><line x1="100" y1="185" x2="160" y2="90" stroke="rgba(206,147,216,0)" stroke-width="10" stroke-linecap="round"/><line x1="160" y1="90" x2="290" y2="185" stroke="rgba(206,147,216,0)" stroke-width="10" stroke-linecap="round"/></g>
-        <text x="12" y="112" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="800">Wheel &amp; Axle</text>
-        <text x="224" y="33" font-size="10" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Lever</text>
-        <text x="148" y="228" font-size="10" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Pulley</text>
-        <text x="228" y="173" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="800">Chain</text>
-        <text x="52" y="108" font-size="9" fill="#80cbc4" font-family="Nunito,sans-serif" font-weight="800">Wedge</text>
-        <text x="148" y="72" font-size="9" fill="#F06292" font-family="Nunito,sans-serif" font-weight="800">Screws</text>
+        <text x="2" y="145" font-size="13" fill="#42A5F5" font-family="Nunito,sans-serif" font-weight="900" stroke="#0d1b2a" stroke-width="3" paint-order="stroke">Wheel &amp; Axle</text>
+        <text x="232" y="22" font-size="13" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="900" stroke="#0d1b2a" stroke-width="3" paint-order="stroke">Lever</text>
+        <text x="148" y="258" font-size="13" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="900" stroke="#0d1b2a" stroke-width="3" paint-order="stroke">Pulley</text>
+        <text x="236" y="162" font-size="13" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" stroke="#0d1b2a" stroke-width="3" paint-order="stroke">Chain</text>
+        <text x="22" y="230" font-size="12" fill="#80cbc4" font-family="Nunito,sans-serif" font-weight="900" stroke="#0d1b2a" stroke-width="3" paint-order="stroke">Wedge</text>
+        <text x="162" y="68" font-size="12" fill="#F06292" font-family="Nunito,sans-serif" font-weight="900" stroke="#0d1b2a" stroke-width="3" paint-order="stroke">Screws</text>
       </svg>
       <div class="pg">
         <div class="pi" id="pc-w" onclick="bkT('wheel')"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="22" fill="none" stroke="#42A5F5" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#1565C0"/><line x1="26" y1="4" x2="26" y2="48" stroke="#42A5F5" stroke-width="2"/><line x1="4" y1="26" x2="48" y2="26" stroke="#42A5F5" stroke-width="2"/><line x1="10" y1="10" x2="42" y2="42" stroke="#42A5F5" stroke-width="2"/><line x1="42" y1="10" x2="10" y2="42" stroke="#42A5F5" stroke-width="2"/></svg><div class="pn">Wheel &amp; Axle</div><div class="pr">Wheels spin!</div></div>
         <div class="pi" id="pc-l" onclick="bkT('lever')"><svg viewBox="0 0 52 52"><rect x="4" y="24" width="44" height="6" rx="3" fill="#66BB6A"/><circle cx="26" cy="27" r="6" fill="#2E7D32"/><rect x="2" y="20" width="10" height="12" rx="2" fill="#a5d6a7"/><rect x="40" y="20" width="10" height="12" rx="2" fill="#2E7D32" opacity=".6"/></svg><div class="pn">Lever</div><div class="pr">Steers the bike!</div></div>
         <div class="pi" id="pc-p" onclick="bkT('pulley')"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="18" fill="none" stroke="#FFA726" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#E65100"/><rect x="22" y="4" width="8" height="8" rx="2" fill="#FFA726"/><rect x="22" y="40" width="8" height="8" rx="2" fill="#FFA726"/><rect x="4" y="22" width="8" height="8" rx="2" fill="#FFA726"/><rect x="40" y="22" width="8" height="8" rx="2" fill="#FFA726"/></svg><div class="pn">Pulley</div><div class="pr">Chain &amp; Gears!</div></div>
         <div class="pi" id="pc-s" onclick="bkT('screw')"><svg viewBox="0 0 52 52"><rect x="20" y="6" width="12" height="16" rx="3" fill="#F06292"/><rect x="14" y="8" width="24" height="6" rx="1" fill="#AD1457"/><rect x="22" y="22" width="8" height="24" rx="2" fill="#F06292"/><line x1="22" y1="28" x2="30" y2="28" stroke="#AD1457" stroke-width="2"/><line x1="22" y1="34" x2="30" y2="34" stroke="#AD1457" stroke-width="2"/><line x1="22" y1="40" x2="30" y2="40" stroke="#AD1457" stroke-width="2"/></svg><div class="pn">Screw</div><div class="pr">Holds together!</div></div>
-        <div class="pi" id="pc-wd" onclick="bkT('wedge')"><svg viewBox="0 0 52 52"><polygon points="4,44 48,44 48,14" fill="#80cbc4" opacity=".85"/><line x1="4" y1="44" x2="48" y2="14" stroke="#00695C" stroke-width="3"/><line x1="4" y1="44" x2="48" y2="44" stroke="#00695C" stroke-width="3"/></svg><div class="pn">Wedge</div><div class="pr">Brakes stop you!</div></div>
-        <div class="pi" id="pc-i" onclick="bkT('inclined')"><svg viewBox="0 0 52 52"><polygon points="4,44 48,44 48,14" fill="#ce93d8" opacity=".75"/><line x1="4" y1="44" x2="48" y2="14" stroke="#7B1FA2" stroke-width="3"/><line x1="4" y1="44" x2="48" y2="44" stroke="#7B1FA2" stroke-width="3"/></svg><div class="pn">Inclined Plane</div><div class="pr">Ramps help climb!</div></div>
+        <div class="pi" id="pc-wd" onclick="bkT('wedge')"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="16" fill="none" stroke="#4DB6AC" stroke-width="3.5"/><circle cx="26" cy="26" r="5" fill="#00695C"/><line x1="26" y1="10" x2="26" y2="42" stroke="#4DB6AC" stroke-width="1.5"/><line x1="10" y1="26" x2="42" y2="26" stroke="#4DB6AC" stroke-width="1.5"/><polygon points="4,18 14,26 4,34" fill="#FFE082"/><polygon points="48,18 38,26 48,34" fill="#FFE082"/><rect x="1" y="21" width="5" height="10" rx="2" fill="#80cbc4"/><rect x="46" y="21" width="5" height="10" rx="2" fill="#80cbc4"/></svg><div class="pn">Wedge</div><div class="pr">Brakes stop you!</div></div>
       </div>
     </div>
   </div>
@@ -180,10 +200,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
 <!-- SLIDE 2: LEVER -->
 <div class="slide bg-lever" id="slide-2">
   <div class="sl">
-    <div class="sh"><div class="sl-lbl">Simple Machine #1</div><div class="sl-ttl" style="color:#66BB6A">🔧 The Lever</div></div>
+    <div class="sh"><div class="sl-ttl" style="color:#66BB6A">🔧 The Lever</div></div>
     <div>
       <div class="ic" style="border-color:rgba(102,187,106,.4)"><h3 style="color:#66BB6A">What is a Lever?</h3><p>A lever is like a <strong style="color:#fff">seesaw</strong>! It is a bar that turns on a special point called a <strong style="color:#FFE082">fulcrum</strong>. Push one side down and the other goes up!</p></div>
-      <div class="ic" style="margin-top:10px;border-color:rgba(102,187,106,.3)"><h3 style="color:#66BB6A;font-size:14px">🚲 On the bicycle:</h3><ul><li><strong>Handlebars</strong> — turn to steer left or right</li><li><strong>Brake levers</strong> — squeeze to slow down</li><li><strong>Pedal cranks</strong> — push to go forward!</li></ul><p style="margin-top:7px;font-size:12px;color:rgba(255,255,255,.7)">A small push on the grip makes the big front wheel turn! 💪</p></div>
       <div class="qc"><div class="w">"The handlebars are levers. They help us steer the bike easily with just a little bit of force."</div></div>
     </div>
     <div class="ilc">
@@ -201,11 +220,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
         <text x="52" y="180" font-size="10" fill="#a5d6a7" font-family="Nunito,sans-serif" font-weight="700">Brake</text>
         <text x="226" y="180" font-size="10" fill="#a5d6a7" font-family="Nunito,sans-serif" font-weight="700">Brake</text>
         <text x="222" y="288" font-size="10" fill="#42A5F5" font-family="Nunito,sans-serif" font-weight="800">Output: wheel turns!</text>
-        <rect x="28" y="238" width="200" height="40" rx="10" fill="rgba(0,0,0,.4)" stroke="#66BB6A" stroke-width="1.5"/>
-        <text x="128" y="256" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">⭐ Fun Fact!</text>
-        <text x="128" y="271" font-size="10" fill="#fff" font-family="Nunito,sans-serif" text-anchor="middle">A seesaw is also a lever!</text>
       </svg>
-      <div class="ic" style="padding:8px 13px;margin-top:0"><p style="font-size:11.5px"><strong style="color:#66BB6A">The 3 parts:</strong> Bar (handlebar) + Fulcrum (pivot) + Output (wheel turns). Simple! ✅</p></div>
     </div>
   </div>
 </div>
@@ -213,10 +228,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
 <!-- SLIDE 3: WHEEL & AXLE -->
 <div class="slide bg-wheel" id="slide-3">
   <div class="sl">
-    <div class="sh"><div class="sl-lbl">Simple Machine #2</div><div class="sl-ttl" style="color:#FFA726">⭕ Wheel &amp; Axle</div></div>
+    <div class="sh"><div class="sl-ttl" style="color:#FFA726">⭕ Wheel &amp; Axle</div></div>
     <div>
       <div class="ic" style="border-color:rgba(255,167,38,.4)"><h3 style="color:#FFA726">What is it?</h3><p>A <strong style="color:#fff">big wheel connected to a small rod</strong> (axle). When the wheel spins, the axle spins too! It makes things move <strong style="color:#FFE082">easier and smoother</strong>.</p></div>
-      <div class="ic" style="margin-top:10px;border-color:rgba(255,167,38,.3)"><h3 style="color:#FFA726;font-size:14px">🚲 On the bicycle:</h3><ul><li><strong>Both wheels</strong> — spin on the axle to roll forward</li><li><strong>Pedal cranks</strong> — also a wheel &amp; axle!</li><li><strong>Less friction</strong> = faster, smoother riding!</li></ul><p style="margin-top:7px;font-size:12px;color:rgba(255,255,255,.7)">Without wheels you'd have to drag the bike! That would be very hard! 😅</p></div>
       <div class="qc"><div class="w">"The wheels and the axle help us roll fast! They reduce friction so the bike moves smoothly."</div></div>
     </div>
     <div class="ilc">
@@ -234,10 +248,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
         <text x="134" y="150" font-size="10" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Axle (Hub)</text>
         <text x="10" y="105" font-size="10" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Rim</text>
         <text x="248" y="196" font-size="10" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Gear/Pulley</text>
-        <rect x="28" y="204" width="188" height="26" rx="8" fill="rgba(0,0,0,.45)" stroke="#FFE082" stroke-width="1.5"/>
-        <text x="122" y="221" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">⚡ Reduces Friction!</text>
       </svg>
-      <div class="ic" style="padding:8px 13px;margin-top:0"><p style="font-size:11.5px"><strong style="color:#FFA726">Also wheel &amp; axle:</strong> Pedal axle, headset — every spinning part!</p></div>
     </div>
   </div>
 </div>
@@ -245,27 +256,26 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
 <!-- SLIDE 4: PULLEY -->
 <div class="slide bg-pulley" id="slide-4">
   <div class="sl">
-    <div class="sh"><div class="sl-lbl">Simple Machine #3</div><div class="sl-ttl" style="color:#64B5F6">⛓ The Pulley</div></div>
+    <div class="sh"><div class="sl-ttl" style="color:#64B5F6">⛓ The Pulley</div></div>
     <div>
       <div class="ic" style="border-color:rgba(100,181,246,.4)"><h3 style="color:#64B5F6">What is a Pulley?</h3><p>A pulley is a <strong style="color:#fff">wheel with a rope or chain around it</strong>. Pull one end and the other side moves! It changes the <strong style="color:#FFE082">direction of force</strong> to make lifting easier.</p></div>
-      <div class="ic" style="margin-top:10px;border-color:rgba(100,181,246,.3)"><h3 style="color:#64B5F6;font-size:14px">🚲 On the bicycle:</h3><ul><li><strong>Chain + gears</strong> — the chain is like a pulley rope!</li><li><strong>Chainring</strong> — big front gear connected to pedals</li><li><strong>Rear cog</strong> — small gear on the back wheel</li></ul><p style="margin-top:7px;font-size:12px;color:rgba(255,255,255,.7)">Your legs push the pedals → chain → rear wheel = you move! 🚀</p></div>
       <div class="qc"><div class="w">"The chain and gears work like a pulley — they carry my leg power all the way to the back wheel!"</div></div>
     </div>
     <div class="ilc">
       <div class="il-lbl">🖱️ Hover to see the chain move!</div>
       <div class="stt" id="pu-tip"></div>
       <svg viewBox="0 0 340 265" xmlns="http://www.w3.org/2000/svg" style="width:100%">
-        <g id="pu-bg" class="bp" transform="translate(110,133)"><circle r="68" fill="none" stroke="#64B5F6" stroke-width="6"/><circle r="21" fill="#002d5c"/><g id="pu-bgt"><rect x="-6" y="-72" width="12" height="12" rx="2" fill="#64B5F6"/><rect x="-6" y="60" width="12" height="12" rx="2" fill="#64B5F6"/><rect x="60" y="-6" width="12" height="12" rx="2" fill="#64B5F6"/><rect x="-72" y="-6" width="12" height="12" rx="2" fill="#64B5F6"/><rect x="36" y="-60" width="12" height="12" rx="2" fill="#64B5F6" transform="rotate(45,42,-54)"/><rect x="36" y="48" width="12" height="12" rx="2" fill="#64B5F6" transform="rotate(-45,42,54)"/><rect x="-48" y="-60" width="12" height="12" rx="2" fill="#64B5F6" transform="rotate(-45,-42,-54)"/><rect x="-48" y="48" width="12" height="12" rx="2" fill="#64B5F6" transform="rotate(45,-42,54)"/></g><circle r="7" fill="#64B5F6"/><text x="0" y="4" font-size="9" fill="#fff" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">PEDAL</text></g>
-        <g id="pu-sg" class="bp" transform="translate(262,165)"><circle r="37" fill="none" stroke="#FFE082" stroke-width="5"/><circle r="12" fill="#002d5c"/><g id="pu-sgt"><rect x="-5" y="-41" width="10" height="9" rx="2" fill="#FFE082"/><rect x="-5" y="32" width="10" height="9" rx="2" fill="#FFE082"/><rect x="32" y="-5" width="9" height="10" rx="2" fill="#FFE082"/><rect x="-41" y="-5" width="9" height="10" rx="2" fill="#FFE082"/></g><circle r="5" fill="#FFE082"/><text x="0" y="4" font-size="9" fill="#fff" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">COG</text></g>
+        <g id="pu-bg" class="bp" transform="translate(110,133)"><circle r="68" fill="none" stroke="#64B5F6" stroke-width="6"/><circle r="21" fill="#002d5c"/><g id="pu-bgt"><rect x="-6" y="-72" width="12" height="12" rx="2" fill="#64B5F6"/><rect x="-6" y="60" width="12" height="12" rx="2" fill="#64B5F6"/><rect x="60" y="-6" width="12" height="12" rx="2" fill="#64B5F6"/><rect x="-72" y="-6" width="12" height="12" rx="2" fill="#64B5F6"/><rect x="36" y="-60" width="12" height="12" rx="2" fill="#64B5F6" transform="rotate(45,42,-54)"/><rect x="36" y="48" width="12" height="12" rx="2" fill="#64B5F6" transform="rotate(-45,42,54)"/><rect x="-48" y="-60" width="12" height="12" rx="2" fill="#64B5F6" transform="rotate(-45,-42,-54)"/><rect x="-48" y="48" width="12" height="12" rx="2" fill="#64B5F6" transform="rotate(45,-42,54)"/></g><circle r="7" fill="#64B5F6"/></g>
+        <text x="78" y="137" font-size="13" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" stroke="#001830" stroke-width="3" paint-order="stroke" text-anchor="middle">PEDAL</text>
+        <g id="pu-sg" class="bp" transform="translate(262,165)"><circle r="37" fill="none" stroke="#FFE082" stroke-width="5"/><circle r="12" fill="#002d5c"/><g id="pu-sgt"><rect x="-5" y="-41" width="10" height="9" rx="2" fill="#FFE082"/><rect x="-5" y="32" width="10" height="9" rx="2" fill="#FFE082"/><rect x="32" y="-5" width="9" height="10" rx="2" fill="#FFE082"/><rect x="-41" y="-5" width="9" height="10" rx="2" fill="#FFE082"/></g><circle r="5" fill="#FFE082"/></g>
+        <text x="262" y="169" font-size="13" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" stroke="#001830" stroke-width="3" paint-order="stroke" text-anchor="middle">COG</text>
         <g id="pu-ch" class="bp"><path id="pu-ct" d="M178 98 Q220 93 225 128" fill="none" stroke="#FFE082" stroke-width="5" stroke-dasharray="9,5" stroke-linecap="round"/><path id="pu-cb" d="M178 168 Q220 178 225 202" fill="none" stroke="#FFE082" stroke-width="5" stroke-dasharray="9,5" stroke-linecap="round"/></g>
         <g id="pu-pd" class="bp"><line id="pu-pa" x1="110" y1="133" x2="130" y2="153" stroke="#42A5F5" stroke-width="6"/><rect x="126" y="151" width="20" height="8" rx="3" fill="#90CAF9"/></g>
-        <text x="48" y="56" font-size="11" fill="#64B5F6" font-family="Nunito,sans-serif" font-weight="800">Big Gear (Chainring)</text>
-        <text x="254" y="218" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Small Gear (Cog)</text>
-        <text x="196" y="82" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="800">Chain →</text>
-        <rect x="10" y="232" width="200" height="28" rx="9" fill="rgba(0,0,0,.4)" stroke="#64B5F6" stroke-width="1.5"/>
-        <text x="110" y="250" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">⭐ Gears control your speed!</text>
+        <!-- Labels with stroke for visibility -->
+        <text x="30" y="48" font-size="13" fill="#64B5F6" font-family="Nunito,sans-serif" font-weight="900" stroke="#001830" stroke-width="3" paint-order="stroke">Big Gear (Chainring)</text>
+        <text x="192" y="260" font-size="13" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="900" stroke="#001830" stroke-width="3" paint-order="stroke">Small Gear (Cog)</text>
+        <text x="192" y="78" font-size="12" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" stroke="#001830" stroke-width="3" paint-order="stroke">Chain →</text>
       </svg>
-      <div class="ic" style="padding:8px 13px;margin-top:0"><p style="font-size:11.5px"><strong style="color:#64B5F6">Fun fact:</strong> Flagpoles use a pulley too — you pull DOWN and the flag goes UP! 🏳️</p></div>
     </div>
   </div>
 </div>
@@ -273,11 +283,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
 <!-- SLIDE 5: SCREW -->
 <div class="slide bg-screw" id="slide-5">
   <div class="sl">
-    <div class="sh"><div class="sl-lbl">Simple Machine #4</div><div class="sl-ttl" style="color:#F48FB1">🔩 The Screw</div></div>
+    <div class="sh"><div class="sl-ttl" style="color:#F48FB1">🔩 The Screw</div></div>
     <div>
-      <div class="ic" style="border-color:rgba(244,143,177,.4)"><h3 style="color:#F48FB1">What is a Screw?</h3><p>A screw is like an <strong style="color:#fff">inclined plane wrapped around a stick</strong>! When you turn it round and round, it moves forward and holds things <strong style="color:#FFE082">very tightly</strong> together.</p></div>
-      <div class="ic" style="margin-top:10px;border-color:rgba(244,143,177,.3)"><h3 style="color:#F48FB1;font-size:14px">🚲 On the bicycle:</h3><ul><li><strong>Bolts &amp; nuts</strong> — hold wheels, seat &amp; handlebars</li><li><strong>Pedal screws</strong> — attach pedals to cranks</li><li><strong>Brake screws</strong> — keep brakes in place</li></ul><p style="margin-top:7px;font-size:12px;color:rgba(255,255,255,.7)">Without screws, the bike would fall apart in seconds! They are tiny superheroes! 🦸</p></div>
-      <div class="qc"><div class="w">"Screws are everywhere on the bike — they are tiny superheroes holding everything together!"</div></div>
+      <div class="ic" style="border-color:rgba(244,143,177,.4)"><h3 style="color:#F48FB1">What is a Screw?</h3><p>A screw is a <strong style="color:#fff">mechanical fixing element</strong>, composed of a <strong style="color:#FFE082">threaded body, a head and a tip</strong>. It is used to join pieces.</p></div>
+      <div class="qc"><div class="w">"Without screws, the bike would fall apart in seconds."</div></div>
     </div>
     <div class="ilc">
       <div class="il-lbl">🖱️ Hover each screw!</div>
@@ -303,14 +312,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
         <g id="sc-b4" class="bp" transform="translate(290,158)"><circle r="15" fill="#AD1457" opacity=".9"/><circle r="9" fill="#F48FB1"/><line x1="-6" y1="0" x2="6" y2="0" stroke="#880e4f" stroke-width="3"/><line x1="0" y1="-6" x2="0" y2="6" stroke="#880e4f" stroke-width="3"/></g>
         <text x="108" y="57" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Turn to go in! →</text>
         <text x="108" y="226" font-size="11" fill="#F48FB1" font-family="Nunito,sans-serif" font-weight="800">Thread = Inclined Plane!</text>
-        <text x="76" y="97" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="700">Wheel bolt</text>
+        <text x="76" y="110" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="700">Wheel bolt</text>
         <text x="76" y="188" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="700">Seat bolt</text>
         <text x="240" y="97" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="700">Brake bolt</text>
         <text x="238" y="188" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="700">Frame bolt</text>
-        <rect x="30" y="242" width="280" height="24" rx="8" fill="rgba(0,0,0,.4)" stroke="#F48FB1" stroke-width="1.5"/>
-        <text x="170" y="258" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">⭐ A jar lid is also a screw!</text>
       </svg>
-      <div class="ic" style="padding:8px 13px;margin-top:0"><p style="font-size:11.5px"><strong style="color:#F48FB1">Remember:</strong> Righty tighty = goes in. Lefty loosey = comes out! 😄</p></div>
     </div>
   </div>
 </div>
@@ -318,71 +324,66 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
 <!-- SLIDE 6: WEDGE -->
 <div class="slide bg-wedge" id="slide-6">
   <div class="sl">
-    <div class="sh"><div class="sl-lbl">Simple Machine #5</div><div class="sl-ttl" style="color:#4DB6AC">🪓 The Wedge</div></div>
+    <div class="sh"><div class="sl-ttl" style="color:#4DB6AC">🛑 The Wedge</div></div>
     <div>
-      <div class="ic" style="border-color:rgba(77,182,172,.4)"><h3 style="color:#4DB6AC">What is a Wedge?</h3><p>A wedge is like <strong style="color:#fff">two ramps put back to back</strong>! It has a sharp, thin edge that <strong style="color:#FFE082">splits things apart or holds them still</strong>. Think of a knife or an axe!</p></div>
-      <div class="ic" style="margin-top:10px;border-color:rgba(77,182,172,.3)"><h3 style="color:#4DB6AC;font-size:14px">🚲 On the bicycle:</h3><ul><li><strong>Brake pads</strong> — wedge shape squeezes the wheel to stop!</li><li><strong>Tire tread</strong> — tiny wedges grip the road</li><li><strong>Pedal teeth</strong> — grip your shoe so your foot doesn't slip</li></ul><p style="margin-top:7px;font-size:12px;color:rgba(255,255,255,.7)">Squeeze the brake lever → pad presses wheel → friction stops you safely! 🛑</p></div>
+      <div class="ic" style="border-color:rgba(77,182,172,.4)"><h3 style="color:#4DB6AC">What is a Wedge?</h3><p>A wedge is like <strong style="color:#fff">two ramps put back to back</strong>! It has a sharp, thin edge that <strong style="color:#FFE082">splits things apart or holds them still</strong>.</p></div>
       <div class="qc"><div class="w">"The brake pads are wedges — when they squeeze the wheel, friction stops the bike!"</div></div>
     </div>
     <div class="ilc">
       <div class="il-lbl">🖱️ Hover to squeeze the brakes!</div>
       <div class="stt" id="wd-tip"></div>
       <svg viewBox="0 0 340 262" xmlns="http://www.w3.org/2000/svg" style="width:100%">
-        <circle cx="170" cy="128" r="90" fill="none" stroke="#4DB6AC" stroke-width="7"/>
-        <circle cx="170" cy="128" r="74" fill="none" stroke="rgba(77,182,172,.18)" stroke-width="12"/>
-        <g id="wd-wsp" class="bp" transform="translate(170,128)"><line x1="0" y1="-90" x2="0" y2="90" stroke="#4DB6AC" stroke-width="2"/><line x1="-90" y1="0" x2="90" y2="0" stroke="#4DB6AC" stroke-width="2"/><line x1="-64" y1="-64" x2="64" y2="64" stroke="#4DB6AC" stroke-width="2"/><line x1="64" y1="-64" x2="-64" y2="64" stroke="#4DB6AC" stroke-width="2"/></g>
-        <circle cx="170" cy="128" r="14" fill="#00695C"/>
-        <g id="wd-bk" class="bp">
-          <polygon id="wd-lt" points="68,106 80,116 68,126" fill="#80cbc4"/>
-          <polygon id="wd-lb" points="68,130 80,140 68,150" fill="#80cbc4"/>
-          <polygon id="wd-rt" points="272,106 260,116 272,126" fill="#80cbc4"/>
-          <polygon id="wd-rb" points="272,130 260,140 272,150" fill="#80cbc4"/>
-          <rect id="wd-la" x="50" y="106" width="20" height="44" rx="4" fill="#007a60" opacity=".7"/>
-          <rect id="wd-ra" x="270" y="106" width="20" height="44" rx="4" fill="#007a60" opacity=".7"/>
+
+        <!-- WHEEL RIM -->
+        <circle cx="170" cy="148" r="88" fill="none" stroke="#4DB6AC" stroke-width="7"/>
+        <circle cx="170" cy="148" r="72" fill="none" stroke="rgba(77,182,172,.18)" stroke-width="10"/>
+        <g id="wd-wsp" class="bp" transform="translate(170,148)">
+          <line x1="0" y1="-88" x2="0" y2="88" stroke="#4DB6AC" stroke-width="2"/>
+          <line x1="-88" y1="0" x2="88" y2="0" stroke="#4DB6AC" stroke-width="2"/>
+          <line x1="-62" y1="-62" x2="62" y2="62" stroke="#4DB6AC" stroke-width="2"/>
+          <line x1="62" y1="-62" x2="-62" y2="62" stroke="#4DB6AC" stroke-width="2"/>
         </g>
-        <g id="wd-ca" class="bp"><line x1="170" y1="26" x2="170" y2="5" stroke="#aaa" stroke-width="4"/><line x1="80" y1="5" x2="260" y2="5" stroke="#aaa" stroke-width="4" stroke-linecap="round"/><circle cx="170" cy="26" r="6" fill="#f9a825"/></g>
-        <text x="10" y="117" font-size="10" fill="#4DB6AC" font-family="Nunito,sans-serif" font-weight="800">Brake Pad</text>
-        <text x="10" y="131" font-size="10" fill="#4DB6AC" font-family="Nunito,sans-serif" font-weight="800">(Wedge)</text>
-        <text x="270" y="117" font-size="10" fill="#4DB6AC" font-family="Nunito,sans-serif" font-weight="800">Brake Pad</text>
-        <text x="270" y="131" font-size="10" fill="#4DB6AC" font-family="Nunito,sans-serif" font-weight="800">(Wedge)</text>
-        <text x="148" y="18" font-size="10" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800">Cable</text>
-        <rect x="100" y="196" width="140" height="26" rx="8" fill="rgba(0,0,0,.45)" stroke="#4DB6AC" stroke-width="1.5"/>
-        <text x="170" y="213" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">Friction = STOP! 🛑</text>
-        <text x="14" y="244" font-size="10" fill="#fff" font-family="Nunito,sans-serif" font-weight="700">Other wedges:</text>
-        <text x="14" y="258" font-size="10" fill="rgba(255,255,255,.65)" font-family="Nunito,sans-serif">Knife • Axe • Door stopper • Zipper teeth</text>
+        <circle cx="170" cy="148" r="13" fill="#00695C"/>
+
+        <!-- BRAKE CABLE on top -->
+        <g id="wd-ca" class="bp">
+          <line x1="170" y1="48" x2="170" y2="28" stroke="#ccc" stroke-width="4"/>
+          <line x1="90" y1="28" x2="250" y2="28" stroke="#ccc" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="170" cy="48" r="6" fill="#f9a825"/>
+        </g>
+        <text x="140" y="22" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="900" stroke="#002d24" stroke-width="2" paint-order="stroke">Cable</text>
+
+        <!-- LEFT BRAKE ARM + WEDGE PAD -->
+        <g id="wd-bk" class="bp">
+          <!-- Left arm -->
+          <rect id="wd-la" x="46" y="118" width="18" height="58" rx="5" fill="#005546" opacity=".85"/>
+          <!-- Left wedge pad — triangle shape pointing RIGHT (into rim) -->
+          <polygon id="wd-lt" points="64,122 82,138 64,154" fill="#FFE082"/>
+          <!-- Right arm -->
+          <rect id="wd-ra" x="276" y="118" width="18" height="58" rx="5" fill="#005546" opacity=".85"/>
+          <!-- Right wedge pad — triangle shape pointing LEFT (into rim) -->
+          <polygon id="wd-rt" points="276,122 258,138 276,154" fill="#FFE082"/>
+        </g>
+
+        <!-- WEDGE SHAPE EXPLAINER (top-left inset) -->
+        <!-- Mini diagram showing "two ramps back to back" -->
+        <rect x="8" y="4" width="110" height="52" rx="8" fill="rgba(0,0,0,.35)"/>
+        <polygon points="18,48 63,8 63,48" fill="#FFE082" opacity=".9"/>
+        <polygon points="108,48 63,8 63,48" fill="#80cbc4" opacity=".9"/>
+        <text x="63" y="58" font-size="9" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle" stroke="#002d24" stroke-width="2" paint-order="stroke">Wedge = 2 ramps!</text>
+
+        <!-- LABELS -->
+        <text x="5" y="112" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="900" stroke="#002d24" stroke-width="2" paint-order="stroke">Brake Pad</text>
+        <text x="5" y="126" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="900" stroke="#002d24" stroke-width="2" paint-order="stroke">(Wedge ▶)</text>
+        <text x="228" y="112" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="900" stroke="#002d24" stroke-width="2" paint-order="stroke">Brake Pad</text>
+        <text x="228" y="126" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="900" stroke="#002d24" stroke-width="2" paint-order="stroke">(◀ Wedge)</text>
+
+        <!-- FRICTION label at bottom -->
+        <text x="170" y="252" font-size="13" fill="#fff" font-family="Nunito,sans-serif" font-weight="900" text-anchor="middle" stroke="#002d24" stroke-width="2" paint-order="stroke">🛑 Wedge shape = Friction = STOP!</text>
       </svg>
-      <div class="ic" style="padding:8px 13px;margin-top:0"><p style="font-size:11.5px"><strong style="color:#4DB6AC">How it works:</strong> More squeeze = more friction = stops faster! The wedge shape makes this happen! ✋</p></div>
     </div>
   </div>
 </div>
-
-<!-- SLIDE 7: INCLINED PLANE -->
-<div class="slide bg-incl" id="slide-7">
-  <div class="sl">
-    <div class="sh"><div class="sl-lbl">Simple Machine #6</div><div class="sl-ttl" style="color:#CE93D8">📐 Inclined Plane</div></div>
-    <div>
-      <div class="ic" style="border-color:rgba(206,147,216,.4)"><h3 style="color:#CE93D8">What is it?</h3><p>An inclined plane is simply a <strong style="color:#fff">RAMP</strong>! 🏔️ Instead of lifting something straight up (hard!), you push it up a slope — much easier! The <strong style="color:#FFE082">longer the ramp, the less force you need</strong>!</p></div>
-      <div class="ic" style="margin-top:10px;border-color:rgba(206,147,216,.3)"><h3 style="color:#CE93D8;font-size:14px">🚲 On the bicycle:</h3><ul><li><strong>Hills &amp; ramps</strong> — the road slope is an inclined plane!</li><li><strong>Frame angles</strong> — slanted frame absorbs bumps</li><li><strong>Gear teeth shape</strong> — tiny inclined planes that catch the chain</li></ul><p style="margin-top:7px;font-size:12px;color:rgba(255,255,255,.7)">A long gentle hill is easier than going straight up a wall — that's the inclined plane! ⛰️</p></div>
-      <div class="qc"><div class="w">"A ramp is an inclined plane — it lets us ride up hills without using too much energy!"</div></div>
-    </div>
-    <div class="ilc">
-      <div class="il-lbl">🖱️ Hover to see the bike climb!</div>
-      <div class="stt" id="ip-tip"></div>
-      <svg viewBox="0 0 340 262" xmlns="http://www.w3.org/2000/svg" style="width:100%">
-        <line x1="10" y1="232" x2="330" y2="232" stroke="rgba(255,255,255,.2)" stroke-width="2"/>
-        <g id="ip-rp" class="bp"><polygon points="20,232 310,232 310,78" fill="rgba(206,147,216,.14)" stroke="#CE93D8" stroke-width="2.5"/><path d="M 55 232 A 35 35 0 0 1 37 208" fill="none" stroke="#FFE082" stroke-width="2" stroke-dasharray="4,3"/><text x="60" y="222" font-size="10" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="700">angle</text><text x="150" y="250" font-size="11" fill="#CE93D8" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">Long distance (easy!)</text><line x1="312" y1="78" x2="312" y2="232" stroke="#CE93D8" stroke-width="2" stroke-dasharray="4,3"/><text x="318" y="160" font-size="10" fill="#CE93D8" font-family="Nunito,sans-serif" font-weight="800">Short</text><text x="318" y="174" font-size="10" fill="#CE93D8" font-family="Nunito,sans-serif" font-weight="800">height</text></g>
-        <g id="ip-bk" class="bp"><circle id="ip-bw1" cx="90" cy="200" r="17" fill="none" stroke="#CE93D8" stroke-width="4"/><circle id="ip-bw2" cx="136" cy="188" r="17" fill="none" stroke="#CE93D8" stroke-width="4"/><line x1="90" y1="200" x2="113" y2="176" stroke="#FFE082" stroke-width="4"/><line x1="113" y1="176" x2="136" y2="188" stroke="#FFE082" stroke-width="4"/><line x1="90" y1="200" x2="136" y2="188" stroke="#FFE082" stroke-width="3"/><line x1="127" y1="174" x2="127" y2="164" stroke="#aaa" stroke-width="3"/><line x1="119" y1="162" x2="135" y2="162" stroke="#ccc" stroke-width="4" stroke-linecap="round"/><circle cx="116" cy="167" r="7" fill="#FFE082"/><rect x="108" y="175" width="14" height="12" rx="3" fill="#FF8A65"/></g>
-        <g id="ip-wa" class="bp"><line x1="310" y1="78" x2="310" y2="232" stroke="#f44336" stroke-width="3" stroke-dasharray="6,4"/><text x="264" y="72" font-size="10" fill="#f44336" font-family="Nunito,sans-serif" font-weight="800">HARD! (straight up)</text><text x="282" y="92" font-size="18" text-anchor="middle" dominant-baseline="middle">😰</text></g>
-        <rect x="14" y="12" width="230" height="26" rx="9" fill="rgba(0,0,0,.4)" stroke="#CE93D8" stroke-width="1.5"/>
-        <text x="129" y="29" font-size="11" fill="#FFE082" font-family="Nunito,sans-serif" font-weight="800" text-anchor="middle">⭐ Stairs are inclined planes!</text>
-      </svg>
-      <div class="ic" style="padding:8px 13px;margin-top:0"><p style="font-size:11.5px"><strong style="color:#CE93D8">Key rule:</strong> LONG gentle ramp = EASY. SHORT steep ramp = HARD. Same height, different effort!</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- SLIDE 8 (index 7): CONCLUSION - but we need to re-number for JS -->
-<!-- placeholder kept to be replaced via JS index trick -->
 
 <script>
 // ─── BIKE SVG INTERACTIVE ───────────────────────────────────
@@ -406,9 +407,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0d1b2a;font-family:
   function spI(){cancelAnimationFrame(iId);var ls=document.querySelectorAll('#bk-ip line');(function f(){iT+=.06;var b=Math.abs(Math.sin(iT));ls.forEach(function(l){l.setAttribute('stroke','rgba(206,147,216,'+(0.4+b*.5)+')');});iId=requestAnimationFrame(f);})();}
   function stI(){cancelAnimationFrame(iId);iId=null;document.querySelectorAll('#bk-ip line').forEach(function(l){l.setAttribute('stroke','rgba(206,147,216,0)');});}
   var acts={wheel:{s:spW,e:stW},lever:{s:spH,e:stH},pulley:{s:spW,e:stW},wedge:{s:spB,e:stB},screw:{s:spS,e:stS},inclined:{s:spI,e:stI}};
-  var svgMap={'bk-bw':'wheel','bk-fw':'wheel','bk-hb':'lever','bk-ch':'pulley','bk-ge':'pulley','bk-br':'wedge','bk-sc':'screw','bk-ip':'inclined'};
+  var svgMap={'bk-bw':'wheel','bk-fw':'wheel','bk-hb':'lever','bk-ch':'pulley','bk-ge':'pulley','bk-br':'wedge','bk-sc':'screw'};
   Object.keys(svgMap).forEach(function(id){var el=document.getElementById(id);if(!el)return;var k=svgMap[id];el.addEventListener('mouseenter',function(){sT(tips[k]);acts[k].s();});el.addEventListener('mouseleave',function(){hT();acts[k].e();});});
-  var pcMap={wheel:'pc-w',lever:'pc-l',pulley:'pc-p',screw:'pc-s',wedge:'pc-wd',inclined:'pc-i'};
+  var pcMap={wheel:'pc-w',lever:'pc-l',pulley:'pc-p',screw:'pc-s',wedge:'pc-wd'};
   window.bkT=function(k){sT(tips[k]||'');Object.keys(acts).forEach(function(a){acts[a].e();});if(acts[k])acts[k].s();document.querySelectorAll('.pi').forEach(function(e){e.classList.remove('ap');});if(pcMap[k]){var e=document.getElementById(pcMap[k]);if(e)e.classList.add('ap');}setTimeout(function(){hT();Object.keys(acts).forEach(function(a){acts[a].e();});document.querySelectorAll('.pi').forEach(function(e){e.classList.remove('ap');});},3000);};
 })();
 
@@ -505,16 +506,15 @@ var cslide = document.createElement('div');
 cslide.id = 'slide-conc';
 cslide.className = 'slide bg-conc';
 cslide.innerHTML = '<div class="cl">'
-  + '<div class="sh" style="justify-content:center;margin-bottom:10px"><div class="sl-lbl" style="text-align:center">Conclusion</div><div class="sl-ttl" style="color:#ce93d8;text-align:center">The Perfect Team of Machines! 🚴</div></div>'
+  + '<div class="sh" style="justify-content:center;margin-bottom:10px"><div class="sl-ttl" style="color:#ce93d8;text-align:center">The Perfect Team of Machines! 🚴</div></div>'
   + '<div class="rg">'
   + '<div class="rc rg2"><svg viewBox="0 0 52 52"><rect x="5" y="23" width="42" height="8" rx="4" fill="#66BB6A"/><circle cx="26" cy="27" r="7" fill="#2E7D32"/><rect x="3" y="19" width="10" height="14" rx="3" fill="#a5d6a7"/><rect x="39" y="19" width="10" height="14" rx="3" fill="#66BB6A" opacity=".6"/></svg><div class="rcn">Lever</div><div class="rcp">Handlebars &amp; Brakes</div></div>'
   + '<div class="rc ro"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="21" fill="none" stroke="#FFA726" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#E65100"/><line x1="26" y1="5" x2="26" y2="47" stroke="#FFA726" stroke-width="2"/><line x1="5" y1="26" x2="47" y2="26" stroke="#FFA726" stroke-width="2"/><line x1="11" y1="11" x2="41" y2="41" stroke="#FFA726" stroke-width="2"/><line x1="41" y1="11" x2="11" y2="41" stroke="#FFA726" stroke-width="2"/></svg><div class="rcn">Wheel &amp; Axle</div><div class="rcp">Wheels &amp; Pedals</div></div>'
   + '<div class="rc rb"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="17" fill="none" stroke="#42A5F5" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#1565C0"/><rect x="21" y="5" width="10" height="9" rx="2" fill="#42A5F5"/><rect x="21" y="38" width="10" height="9" rx="2" fill="#42A5F5"/><rect x="5" y="21" width="9" height="10" rx="2" fill="#42A5F5"/><rect x="38" y="21" width="9" height="10" rx="2" fill="#42A5F5"/></svg><div class="rcn">Pulley</div><div class="rcp">Chain &amp; Gears</div></div>'
   + '<div class="rc rp"><svg viewBox="0 0 52 52"><rect x="19" y="6" width="14" height="16" rx="3" fill="#F06292"/><rect x="13" y="8" width="26" height="8" rx="2" fill="#AD1457"/><rect x="22" y="22" width="8" height="22" rx="2" fill="#F06292"/><line x1="22" y1="28" x2="30" y2="28" stroke="#AD1457" stroke-width="2"/><line x1="22" y1="34" x2="30" y2="34" stroke="#AD1457" stroke-width="2"/><line x1="22" y1="40" x2="30" y2="40" stroke="#AD1457" stroke-width="2"/></svg><div class="rcn">Screw</div><div class="rcp">Bolts &amp; Nuts</div></div>'
-  + '<div class="rc rt"><svg viewBox="0 0 52 52"><polygon points="4,46 48,46 48,16" fill="#80cbc4" opacity=".85"/><line x1="4" y1="46" x2="48" y2="16" stroke="#00695C" stroke-width="3"/><line x1="4" y1="46" x2="48" y2="46" stroke="#00695C" stroke-width="3"/></svg><div class="rcn">Wedge</div><div class="rcp">Brake Pads</div></div>'
-  + '<div class="rc rpu"><svg viewBox="0 0 52 52"><polygon points="4,46 48,46 48,16" fill="#ce93d8" opacity=".8"/><line x1="4" y1="46" x2="48" y2="16" stroke="#7B1FA2" stroke-width="3"/><line x1="4" y1="46" x2="48" y2="46" stroke="#7B1FA2" stroke-width="3"/></svg><div class="rcn">Inclined Plane</div><div class="rcp">Ramps &amp; Frame</div></div>'
+  + '<div class="rc rt"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="16" fill="none" stroke="#4DB6AC" stroke-width="3.5"/><circle cx="26" cy="26" r="5" fill="#00695C"/><line x1="26" y1="10" x2="26" y2="42" stroke="#4DB6AC" stroke-width="1.5"/><line x1="10" y1="26" x2="42" y2="26" stroke="#4DB6AC" stroke-width="1.5"/><polygon points="4,18 14,26 4,34" fill="#FFE082"/><polygon points="48,18 38,26 48,34" fill="#FFE082"/><rect x="1" y="21" width="5" height="10" rx="2" fill="#80cbc4"/><rect x="46" y="21" width="5" height="10" rx="2" fill="#80cbc4"/></svg><div class="rcn">Wedge</div><div class="rcp">Brake Pads</div></div>'
   + '</div>'
-  + '<div class="cr"><div class="ci">⚡ Efficient</div><div class="ci">🌍 Eco-Friendly</div><div class="ci">🎉 Fun &amp; Fast</div><div class="ci">💪 Human-Powered</div><div class="ci">🔬 Science in Real Life!</div></div>'
+  + '<div class="cr"><div class="ci">⚡ Efficient</div><div class="ci">🌍 Eco-Friendly</div><div class="ci">🎉 Fun &amp; Fast</div><div class="ci">💪 Human-Powered</div></div>'
   + '<div class="cq">"In conclusion, the bicycle is the perfect team of machines. It\'s fast, fun, and eco-friendly! <strong>Thank you!</strong>"</div>'
   + '</div>';
 document.getElementById('app').appendChild(cslide);
