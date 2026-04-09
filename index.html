@@ -78,7 +78,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 .il-lbl{font-family:'Fredoka One',cursive;font-size:15px;color:#FFE082;text-align:center}
 
 /* ── ICON GRID (slide 1) ── */
-.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:100%;margin-top:6px}
+.pg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:100%;margin-top:8px}
 .pi{background:rgba(255,255,255,.14);border-radius:13px;padding:10px 6px;text-align:center;border:2px solid rgba(255,255,255,.25);cursor:pointer;transition:transform .15s,border-color .15s,background .15s}
 .pi:hover,.pi.ap{transform:scale(1.08);border-color:#FFD600;background:rgba(255,255,255,.25)}
 .pi svg{width:44px;height:44px}
@@ -89,7 +89,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 
 /* ── CONCLUSION ── */
 .cl{width:100%;max-width:940px;text-align:center}
-.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
 .rc{border-radius:16px;padding:14px 10px;text-align:center;border:2.5px solid}
 .rc svg{width:48px;height:48px;margin:0 auto 6px;display:block}
 .rcn{font-family:'Fredoka One',cursive;font-size:15px;color:#fff}
@@ -208,46 +208,45 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 
 <!-- SLIDE 2: LEVER -->
 <div class="slide bg-uses" id="slide-2">
-  <div class="sl">
-    <div class="sh"><div class="sl-ttl">🚲 Uses of a Bicycle</div></div>
-    <div class="uses-grid">
-      <div class="use-card">
-        <div class="use-icon">🚌</div>
-        <div class="use-body">
-          <div class="use-en">Transportation</div>
-          <div class="use-es">Transporte</div>
-          <div class="use-ex">To go to school.</div>
-        </div>
-      </div>
-      <div class="use-card">
-        <div class="use-icon">💪</div>
-        <div class="use-body">
-          <div class="use-en">Exercise</div>
-          <div class="use-ex">Riding a bicycle is a good way to stay healthy.</div>
-        </div>
-      </div>
-      <div class="use-card">
-        <div class="use-icon">🎉</div>
-        <div class="use-body">
-          <div class="use-en">Recreation</div>
-          <div class="use-es">Recreación</div>
-          <div class="use-ex">We ride our bikes in the park for fun.</div>
-        </div>
-      </div>
-      <div class="use-card">
-        <div class="use-icon">📦</div>
-        <div class="use-body">
-          <div class="use-en">Work</div>
-          <div class="use-ex">To deliver food.</div>
-        </div>
-      </div>
-      <div class="use-card">
-        <div class="use-icon">🌿</div>
-        <div class="use-body">
-          <div class="use-en">Protecting the Environment</div>
-          <div class="use-ex">Bicycles do not produce pollution.</div>
-        </div>
-      </div>
+  <div style="width:100%;max-width:1100px;display:flex;flex-direction:column;gap:14px">
+    <!-- Title + bike -->
+    <div style="display:flex;align-items:center;gap:22px">
+      <svg viewBox="0 0 220 140" xmlns="http://www.w3.org/2000/svg" style="width:170px;flex-shrink:0;filter:drop-shadow(0 2px 8px rgba(0,0,0,.4))">
+        <circle cx="58" cy="100" r="36" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="5"/>
+        <circle cx="58" cy="100" r="6" fill="#FFD600"/>
+        <line x1="58" y1="64" x2="58" y2="136" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+        <line x1="22" y1="100" x2="94" y2="100" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+        <line x1="33" y1="75" x2="83" y2="125" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+        <line x1="83" y1="75" x2="33" y2="125" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+        <circle cx="162" cy="100" r="36" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="5"/>
+        <circle cx="162" cy="100" r="6" fill="#FFD600"/>
+        <line x1="162" y1="64" x2="162" y2="136" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+        <line x1="126" y1="100" x2="198" y2="100" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+        <line x1="137" y1="75" x2="187" y2="125" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+        <line x1="187" y1="75" x2="137" y2="125" stroke="rgba(255,255,255,.4)" stroke-width="2"/>
+        <polyline points="58,100 100,48 135,100 58,100" fill="none" stroke="#FFD600" stroke-width="4.5" stroke-linejoin="round"/>
+        <line x1="100" y1="48" x2="162" y2="100" stroke="#FFD600" stroke-width="4.5"/>
+        <line x1="100" y1="48" x2="114" y2="24" stroke="#FFD600" stroke-width="4"/>
+        <line x1="114" y1="24" x2="162" y2="100" stroke="#FFD600" stroke-width="3.5"/>
+        <line x1="100" y1="48" x2="93" y2="30" stroke="#ccc" stroke-width="4"/>
+        <rect x="78" y="24" width="28" height="8" rx="4" fill="#ccc"/>
+        <line x1="114" y1="24" x2="114" y2="10" stroke="#ccc" stroke-width="4"/>
+        <line x1="96" y1="8" x2="132" y2="8" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="120" cy="100" r="13" fill="none" stroke="#FFD600" stroke-width="3"/>
+        <path d="M133 100 Q148 99 156 97" fill="none" stroke="#FFD600" stroke-width="3" stroke-dasharray="5,4"/>
+      </svg>
+      <div style="font-family:'Fredoka One',cursive;font-size:clamp(26px,3.5vw,44px);color:#fff;line-height:1.05;text-shadow:0 2px 8px rgba(0,0,0,.3)">🚲 Uses of a Bicycle</div>
+    </div>
+    <!-- Row 1: 3 cards -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%">
+      <div class="use-card"><div class="use-icon">🚌</div><div class="use-body"><div class="use-en">Transportation <span class="use-es">/ Transporte</span></div><div class="use-ex">To go to school.</div></div></div>
+      <div class="use-card"><div class="use-icon">💪</div><div class="use-body"><div class="use-en">Exercise</div><div class="use-ex">Riding a bicycle is a good way to stay healthy.</div></div></div>
+      <div class="use-card"><div class="use-icon">🎉</div><div class="use-body"><div class="use-en">Recreation <span class="use-es">/ Recreación</span></div><div class="use-ex">We ride our bikes in the park for fun.</div></div></div>
+    </div>
+    <!-- Row 2: 2 cards centered -->
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:67%;margin:0 auto">
+      <div class="use-card"><div class="use-icon">📦</div><div class="use-body"><div class="use-en">Work</div><div class="use-ex">To deliver food.</div></div></div>
+      <div class="use-card"><div class="use-icon">🌿</div><div class="use-body"><div class="use-en">Protecting the Environment</div><div class="use-ex">Bicycles do not produce pollution.</div></div></div>
     </div>
   </div>
 </div>
@@ -566,6 +565,8 @@ cslide.innerHTML = '<div class="cl">'
   + '<div class="rc ro"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="21" fill="none" stroke="#FFA726" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#E65100"/><line x1="26" y1="5" x2="26" y2="47" stroke="#FFA726" stroke-width="2"/><line x1="5" y1="26" x2="47" y2="26" stroke="#FFA726" stroke-width="2"/><line x1="11" y1="11" x2="41" y2="41" stroke="#FFA726" stroke-width="2"/><line x1="41" y1="11" x2="11" y2="41" stroke="#FFA726" stroke-width="2"/></svg><div class="rcn">Wheel &amp; Axle</div><div class="rcp">Wheels &amp; Pedals</div></div>'
   + '<div class="rc rg2"><svg viewBox="0 0 52 52"><rect x="5" y="23" width="42" height="8" rx="4" fill="#66BB6A"/><circle cx="26" cy="27" r="7" fill="#2E7D32"/><rect x="3" y="19" width="10" height="14" rx="3" fill="#a5d6a7"/><rect x="39" y="19" width="10" height="14" rx="3" fill="#66BB6A" opacity=".6"/></svg><div class="rcn">Lever</div><div class="rcp">Handlebars &amp; Brakes</div></div>'
   + '<div class="rc rt"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="16" fill="none" stroke="#4DB6AC" stroke-width="3.5"/><circle cx="26" cy="26" r="5" fill="#00695C"/><line x1="26" y1="10" x2="26" y2="42" stroke="#4DB6AC" stroke-width="1.5"/><line x1="10" y1="26" x2="42" y2="26" stroke="#4DB6AC" stroke-width="1.5"/><polygon points="4,18 14,26 4,34" fill="#FFE082"/><polygon points="48,18 38,26 48,34" fill="#FFE082"/><rect x="1" y="21" width="5" height="10" rx="2" fill="#80cbc4"/><rect x="46" y="21" width="5" height="10" rx="2" fill="#80cbc4"/></svg><div class="rcn">Wedge</div><div class="rcp">Brake Pads</div></div>'
+  + '</div>'
+  + '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;width:67%;margin:0 auto 12px">'
   + '<div class="rc rb"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="17" fill="none" stroke="#42A5F5" stroke-width="4"/><circle cx="26" cy="26" r="6" fill="#1565C0"/><rect x="21" y="5" width="10" height="9" rx="2" fill="#42A5F5"/><rect x="21" y="38" width="10" height="9" rx="2" fill="#42A5F5"/><rect x="5" y="21" width="9" height="10" rx="2" fill="#42A5F5"/><rect x="38" y="21" width="9" height="10" rx="2" fill="#42A5F5"/></svg><div class="rcn">Pulley</div><div class="rcp">Chain &amp; Gears</div></div>'
   + '<div class="rc rp"><svg viewBox="0 0 52 52"><rect x="19" y="6" width="14" height="16" rx="3" fill="#F06292"/><rect x="13" y="8" width="26" height="8" rx="2" fill="#AD1457"/><rect x="22" y="22" width="8" height="22" rx="2" fill="#F06292"/><line x1="22" y1="28" x2="30" y2="28" stroke="#AD1457" stroke-width="2"/><line x1="22" y1="34" x2="30" y2="34" stroke="#AD1457" stroke-width="2"/><line x1="22" y1="40" x2="30" y2="40" stroke="#AD1457" stroke-width="2"/></svg><div class="rcn">Screw</div><div class="rcp">Bolts &amp; Nuts</div></div>'
   + '</div>'
